@@ -1,5 +1,5 @@
 package connectfour;
 
-public class TextUI{
+public class TextUI {
 
 }

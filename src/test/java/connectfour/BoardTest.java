@@ -2,7 +2,7 @@ package connectfour;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
+// import org.junit.Test;
 
 /* you will need to add test methods and likely change the
 setup method as well.  The samples that are here are just so that
@@ -22,7 +22,7 @@ public class BoardTest{
 
     }
 
-    @Test
+    // @Test
     public void someTestHere(){
         /* to see what happens when a test fails, change
         the 1 to any other number in the statement below */
