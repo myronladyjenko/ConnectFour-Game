@@ -3,11 +3,13 @@ package connectfour;
 import java.util.ArrayList;
 
 public class ValidatePlayerMove {
+    private Board board;
     private final int numberOfColumns = 7;
     private final int numberOfRows = 6;
     private boolean allowedMove;
     
     public ValidatePlayerMove() {
+        board.toString();
         setAllowedMove();
     }
 
