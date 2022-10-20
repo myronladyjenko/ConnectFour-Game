@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Board {
     private ArrayList<BoardCell> cellBoard;
-    private ValidatePlayerMove correctMove;
     private boolean successfullUpdate;
     private boolean isWinner;
     private int winPosition;
+    private boolean allowedMove;
 
     private final int numOfRows = 6;  
     private final int numOfColumns = 7;
@@ -16,13 +16,13 @@ public class Board {
      * This is an empty constructor and it is used to create an empty board
      */
     public Board() {
-        correctMove = new ValidatePlayerMove();
         cellBoard = new ArrayList<BoardCell>();
 
         createEmptyBoard();
         setBoardUpdateValue(false);
         setWinnerValue(false);
         setWinPosition(-1);
+        setAllowedMove();
     }
 
     private void createEmptyBoard() {
@@ -39,6 +39,8 @@ public class Board {
      */
     public boolean updateBoard(int inputColumn, char currTurn) {
         setBoardUpdateValue(false);
+        
+
         int availablePosition = findAvailablePosition(inputColumn);
 
         if (availablePosition != -1 && correctMove.checkBoardMove(availablePosition, cellBoard)) {
@@ -67,6 +69,73 @@ public class Board {
         }
         return emptyPositionNumber;
     }
+
+    /**
+     * The method checks whether the move inputed by the user is allowed on the board
+     * @param inputColumn position of where to do a move on the board
+     * @param boardOfCells List that represents values on stored on the board (1 to 9, 'X', or 'O')
+     * @return whether the user is allowed to make a move (true) or not
+     */
+    public boolean checkBoardMove(int inputColumn, ArrayList<BoardCell> boardOfCells) {
+        setAllowedMove();
+        
+        checkOutOfBounds(inputColumn);
+        do {
+            if (!getAllowedMove()) {
+                printErrorMessage("Error - Entered Board Position is out of Bounds");
+                allowedMove = false;
+                break;
+            }
+        
+            validateMove(inputColumn, boardOfCells);
+            if (!getAllowedMove()) {
+                printErrorMessage("Error - Illegal Move: entered position is filled");
+                allowedMove = false;
+            }
+        } while(false);
+
+        return getAllowedMove();
+    }
+
+    private void validateMove(int inputColumn, ArrayList<BoardCell> boardOfCells) {
+        BoardCell cell = boardOfCells.get(inputColumn);
+
+        if (!cell.isCellEmpty()) {
+            allowedMove = false;
+        }
+    }
+
+    public boolean validateColumnInput(int inputColumn) {
+        if (inputColumn > numOfColumns || inputColumn <= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private void checkOutOfBounds(int inputColumn) {
+        if (inputColumn > (numOfColumns * numberOfRows - 1) || inputColumn < 0) {
+            allowedMove = false;
+        }
+    }
+
+    private void printErrorMessage(String errorMessage) {
+        System.out.println(errorMessage);
+    }
+
+    private void setAllowedMove() {
+        allowedMove = true;
+    }
+
+    private boolean getAllowedMove() {
+        return allowedMove;
+    }
+
+
+
+
+
+
+
 
     /**
      * This method checks whether the board contains a winning condition for either 'X' or 'O'
@@ -218,34 +287,6 @@ public class Board {
         return cellBoard.get(indexOfElement).toString();
     }
 
-    private void setMessageForWinOrTie(String messageToPrint, StringBuilder passedStringToHoldMessage) {
-        passedStringToHoldMessage.append(messageToPrint);
-    }
-
-    private void setWinnerValue(boolean valueToUpdateTo) {
-        isWinner = valueToUpdateTo;
-    }
-
-    private boolean getWinnerValue() {
-        return isWinner;
-    }
-
-    private void setBoardUpdateValue(boolean valueToUpdateTo) {
-        successfullUpdate = valueToUpdateTo;
-    }
-
-    private boolean getBoardUpdateValue() {
-        return successfullUpdate;
-    }
-
-    private void setWinPosition(int foundWinPosition) {
-        winPosition = foundWinPosition;
-    }
-
-    private int getWinPosition() {
-        return this.winPosition;
-    }
-
     /**
      * 
      * @return
@@ -287,6 +328,34 @@ public class Board {
             stringBoard += row;
         }
         return stringBoard;
+    }
+
+    private void setMessageForWinOrTie(String messageToPrint, StringBuilder passedStringToHoldMessage) {
+        passedStringToHoldMessage.append(messageToPrint);
+    }
+
+    private void setWinnerValue(boolean valueToUpdateTo) {
+        isWinner = valueToUpdateTo;
+    }
+
+    private boolean getWinnerValue() {
+        return isWinner;
+    }
+
+    private void setBoardUpdateValue(boolean valueToUpdateTo) {
+        successfullUpdate = valueToUpdateTo;
+    }
+
+    private boolean getBoardUpdateValue() {
+        return successfullUpdate;
+    }
+
+    private void setWinPosition(int foundWinPosition) {
+        winPosition = foundWinPosition;
+    }
+
+    private int getWinPosition() {
+        return this.winPosition;
     }
 
 /* this is a do-nothing method that was put here only so 
