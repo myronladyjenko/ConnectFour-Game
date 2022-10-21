@@ -2,6 +2,14 @@ package connectfour;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a board for the Connect Four game. The board is build from the BoardCells. 
+ * The purpose of this class is construct and manipulate the board based on the user input. This
+ * class provides a string representation of the board, provides a way to detect whether certain
+ * move on the board is allowed and the conditions for the win
+ * 
+ * @author Myron Ladyjenko
+ */
 public class Board {
     private ArrayList<BoardCell> cellBoard;
     private boolean isWinner;
@@ -12,9 +20,6 @@ public class Board {
     private final int numOfRows = 6;  
     private final int numOfColumns = 7;
 
-    /**
-     * This is an empty constructor and it is used to create an empty board
-     */
     public Board() {
         cellBoard = new ArrayList<BoardCell>();
 
@@ -25,7 +30,7 @@ public class Board {
         setPlayerToGoNext('-');
     }
 
-    public Board(StringBuilder stringBoard) {
+    public Board(String stringBoard) {
         cellBoard = new ArrayList<BoardCell>();
 
         createBoardFromString(stringBoard);
@@ -34,7 +39,13 @@ public class Board {
         setAvailablePosNumber(-1);
     }
 
-    private void createBoardFromString(StringBuilder stringBoard) {
+    private void createEmptyBoard() {
+        for (int i = 0; i < numOfRows * numOfColumns; i++) {
+            cellBoard.add(new BoardCell('_'));
+        }
+    }
+
+    private void createBoardFromString(String stringBoard) {
         String sBoard = stripString(stringBoard);
         for (int i = numOfRows - 1; i >= 0; i--) {
             for (int j = i * numOfColumns; j < ((i + 1) * numOfColumns); j++) {
@@ -68,17 +79,23 @@ public class Board {
         }
     }
 
-    private String stripString(StringBuilder stringBoard) {
-        String str = "";
-        str += stringBoard.toString();
-        str = str.replaceAll(",", "");
-        str = str.replaceAll("\n", "");
-        str = str.replaceAll(" ", "");
+    private String stripString(String stringBoard) {
+        stringBoard = stringBoard.replaceAll(",", "");
+        stringBoard = stringBoard.replaceAll("\n", "");
+        stringBoard = stringBoard.replaceAll(" ", "");
 
-        return str;
+        return stringBoard;
     }
 
-    public void validateBoardFromFile(StringBuilder strBoard) throws ThrowExceptionWrongBoardFormat {
+    /**
+     * This method checks if the board read from the file is valid. If not throws two exceptions:
+     * first one if the string read from the file can't be transformed into a board
+     * second one if the game has already finished. 
+     * 
+     * @param strBoard The board read from the file
+     */
+    public void validateBoardFromFile(String strBoard) 
+                                      throws ThrowExceptionWrongBoardFormat, ThrowExceptionTheGameHasEnded {
         int countOnes = 0;
         int countTwos = 0;
 
@@ -104,36 +121,30 @@ public class Board {
         }
         if (Math.abs(countOnes - countTwos) >= 2) {
             throw new ThrowExceptionWrongBoardFormat("One player did two many moves. Please restart");
+        } else {
+            StringBuilder message = new StringBuilder("");
+            createBoardFromString(strBoard);
+
+            if (checkBoardWinner(message)) {
+                throw new ThrowExceptionTheGameHasEnded("The game on this board has finihsed. " + message);
+            }
         }
-    }
-
-    private void createEmptyBoard() {
-        for (int i = 0; i < numOfRows * numOfColumns; i++) {
-            cellBoard.add(new BoardCell('_'));
-        }
-    }
-
-    public char getPlayerTurnToGoNext() {
-        return playerToGoNext;
-    }
-
-    private void setPlayerToGoNext(char nextPlayer) {
-        playerToGoNext = nextPlayer;
     }
 
     /**
+     * This function updates the board with the current turn
      * 
-     * @param currTurn
+     * @param currTurn The current player's turn.
      */
     public void updateBoard(char currTurn) {
         cellBoard.set(getAvailablePosNumber(), new BoardCell((char)currTurn));
     }
 
     /**
+     * The function validates the user input column and throws an exception if the input is out of
+     * range or the column is full
      * 
-     * @param userInputColumn
-     * @return
-     * @throws ThrowExceptionWrongMoveOnBoard
+     * @param userInputColumn the column number that the user inputted
      */
     public void validateMoveOnBoard(int userInputColumn) throws ThrowExceptionWrongMoveOnBoard {
         do {
@@ -148,10 +159,6 @@ public class Board {
         } while(false);
     }
 
-    /**
-     * 
-     * @param inputColumn
-     */
     private void findAvailablePosition(int inputColumn) {
         setAvailablePosNumber(-1);
         int currentCellPosition = inputColumn - 1;
@@ -171,17 +178,13 @@ public class Board {
         return true;
     }
 
-    public void setAvailablePosNumber(int posNumber) {
-        availablePositionNumber = posNumber;
-    }
-
-    public int getAvailablePosNumber() {
-        return availablePositionNumber;
-    }
-
     /**
-     * This method checks whether the board contains a winning condition for either 'X' or 'O'
-     * @return true if 'X' or 'O' won or false otherwise
+     * The function checks for a winner by checking for a horizontal, vertical, forward diagonal, and
+     * backward diagonal win condition. If there is no winner, it checks for a tie
+     * 
+     * @param stringToHoldMessage This is the string that will hold the message to be displayed to the
+     * user by the TextUI class.
+     * @return The method is returning a boolean value.
      */
     public boolean checkBoardWinner(StringBuilder stringToHoldMessage) {
         setWinnerValue(false);
@@ -321,17 +324,9 @@ public class Board {
     }
 
     /**
-     * This method gets a String representation of the value stored in a specific cell
-     * @param indexOfElement
-     * @return
-     */
-    private String getBoardValue(int indexOfElement) {
-        return cellBoard.get(indexOfElement).toString();
-    }
-
-    /**
+     * It returns a string that contains a row of allowed moves (Columns 1 - 7)
      * 
-     * @return
+     * @return A string of the allowed moves for the game board.
      */
     public String constructRowOfAllowedMoves() {
         String rowOfAllowedMoves = " ----- ----- ----- ----- ----- ----- ----- \n";
@@ -347,6 +342,12 @@ public class Board {
         return rowOfAllowedMoves;
     }
 
+    /**
+     * This function returns a string representation of the board in a format that can be written to a
+     * file
+     * 
+     * @return A string representation of the board.
+     */
     public String getFIleFormatStringRepresantionOfBoard() {
         String stringBoardForFile = "";
         for (int i = numOfRows - 1; i >= 0; i--) {
@@ -370,30 +371,9 @@ public class Board {
 
         return stringBoardForFile;
     }
-    
-    /**
-     * 
-     */
-    public String toString() {
-        String stringBoard = "\n";
 
-        for (int i = numOfRows - 1; i >= 0; i--) {
-            String row = "";
-
-            row += "|     |     |     |     |     |     |     |\n";
-            for (int j = i * numOfColumns; j < (i + 1) * numOfColumns; j++) {
-                row += "|  " + cellBoard.get(j).toString() + "  ";
-            }
-            row += "|\n";
-            if (i != 0) {
-                row += "|     |     |     |     |     |     |     |\n";
-            } else {
-                row += "|_____|_____|_____|_____|_____|_____|_____|";
-            }
-
-            stringBoard += row;
-        }
-        return stringBoard;
+    private String getBoardValue(int indexOfElement) {
+        return cellBoard.get(indexOfElement).toString();
     }
 
     private void setMessageForWinOrTie(String messageToPrint, StringBuilder passedStringToHoldMessage) {
@@ -416,4 +396,52 @@ public class Board {
         return this.winPosition;
     }
 
+    private void setPlayerToGoNext(char nextPlayer) {
+        playerToGoNext = nextPlayer;
+    }
+
+    /**
+     * This function returns the character that represents the player whose turn it is to go next.
+     * This is used to properly set the player in Player class
+     * 
+     * @return The player who is to go next.
+     */
+    public char getPlayerTurnToGoNext() {
+        return playerToGoNext;
+    }
+
+    private void setAvailablePosNumber(int posNumber) {
+        availablePositionNumber = posNumber;
+    }
+
+    private int getAvailablePosNumber() {
+        return availablePositionNumber;
+    }
+
+    /**
+     * This function returns a string representation of the board
+     * 
+     * @return A string representation of the board.
+     */
+    public String toString() {
+        String stringBoard = "\n";
+
+        for (int i = numOfRows - 1; i >= 0; i--) {
+            String row = "";
+
+            row += "|     |     |     |     |     |     |     |\n";
+            for (int j = i * numOfColumns; j < (i + 1) * numOfColumns; j++) {
+                row += "|  " + cellBoard.get(j).toString() + "  ";
+            }
+            row += "|\n";
+            if (i != 0) {
+                row += "|     |     |     |     |     |     |     |\n";
+            } else {
+                row += "|_____|_____|_____|_____|_____|_____|_____|";
+            }
+
+            stringBoard += row;
+        }
+        return stringBoard;
+    }
 }

@@ -1,5 +1,12 @@
 package connectfour;
 
+/**
+ * This class represents a player for the ConnectFour game. The purpose of this class is 
+ * to know information about current player's turn. The class provides methods to access information
+ * about player and switch between players.
+ * 
+ * @author Myron Ladyjenko
+ */
 public class Player {
         private char playerTurn;
 
@@ -12,24 +19,26 @@ public class Player {
     }
 
     /**
-     * This method gets the turn of the player
-     * @return next players turn: 'X' or 'O'
-     */
-    public char getTurn() {
-        return playerTurn;
-    }
-
-    /**
-     * This method sets the next players turn 'X' or 'O' into 
-     * the variable playerTurn
-     * @param currTurn current player turn
+     * This method sets the next players turn 'X' or 'O' into the variable playerTurn. 
+     * If the current turn is X, set the current turn to O, otherwise set the current turn to X
+     * 
+     * @param currTurn The current turn of the game.
      */
     public void updateTurn(char currTurn) {
         if (currTurn == 'X') {
-            playerTurn = 'O';
+            setCurrentTurn('O');
         } else {
-            playerTurn = 'X';
+            setCurrentTurn('X');
         }
+    }
+
+    /**
+     * This function returns the current player's turn
+     * 
+     * @return The char playerTurn variable is being returned.
+     */
+    public char getTurn() {
+        return playerTurn;
     }
 
     private void setFirstTurn() {
@@ -47,6 +56,10 @@ public class Player {
 
     private void setCurrentTurn(char currPlayerTurn) {
         playerTurn = currPlayerTurn;
+    }
+
+    public String toString() {
+        return "Current player is: " + Character.toString(getTurn());
     }
     
 }

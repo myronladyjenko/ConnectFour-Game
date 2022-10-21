@@ -73,11 +73,11 @@ public class BoardTest{
         +"|  _  |  _  |  _  |  _  |  _  |  _  |  _  |\n"
         +"|_____|_____|_____|_____|_____|_____|_____|";
 
-        board.setAvailablePosNumber(0);
+        //board.setAvailablePosNumber(0);
         board.updateBoard('X');
-        board.setAvailablePosNumber(1);
+        //board.setAvailablePosNumber(1);
         board.updateBoard('O');
-        board.setAvailablePosNumber(4);
+       //board.setAvailablePosNumber(4);
         board.updateBoard('X');
         Assert.assertEquals(stuff, board.toString());
     }

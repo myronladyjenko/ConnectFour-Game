@@ -7,8 +7,8 @@ package connectfour;
  * 
  * @author Myron Ladyjenko
  */
-public class ThrowExceptionWrongMoveOnBoard extends Exception {
-    public ThrowExceptionWrongMoveOnBoard(String exceptionMessage) {
+public class ThrowExceptionTheGameHasEnded extends Exception {
+    public ThrowExceptionTheGameHasEnded(String exceptionMessage) {
             super(exceptionMessage);
     }
 }
