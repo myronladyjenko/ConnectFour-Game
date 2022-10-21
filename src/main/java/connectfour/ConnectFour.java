@@ -38,13 +38,11 @@ public class ConnectFour {
     public void playGame() {
         connectFourUI.printString("\n\t\tWELCOME TO THE ConnectFour GAME!\n\n");
 
-        while (getSkipVariable() || chooseTheMenuOption() != 3) {
+        while (getSkipVariable() || chooseTheMenuOptionAndInitialize() != 3) {
             StringBuilder messageAboutWinner = new StringBuilder("");
-            connectFourUI.printString(board.toString() + "\n");
-            connectFourUI.printString(board.constructRowOfAllowedMoves());
+            connectFourUI.printString(board.toString() + "\n" + board.constructRowOfAllowedMoves());
             connectFourUI.printString("\nTurn - " + player.getTurn() + "\n");
             connectFourUI.getUserInput("Please choose a position between 1 and 7: ", boardPosition);
-            connectFourUI.printString("\n");
             
             board.updateBoard(player.getTurn());
             player.updateTurn(player.getTurn());
@@ -53,14 +51,8 @@ public class ConnectFour {
                 connectFourUI.printString(messageAboutWinner + "\n");
                 displayFinalResultsForGame();
 
-                connectFourUI.printString("Would you like to save the board?\n");            
-                connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
-                if (connectFourUI.getCharacterInput() == 'y') {
-                    boardFileHandle = new FileHandling();
-                    connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
-                    if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
-                        connectFourUI.printString("Board for successfully saved\n");
-                    }
+                if (promptUser("Would you like to save the board?\n", "Please enter 'y' or 'n': ") == 'n') {
+                    handleStepsToSaveToFile();
                 } else {
                     connectFourUI.printString("The Board is not Saved\n\n");
                 }
@@ -77,7 +69,7 @@ public class ConnectFour {
         connectFourUI.closeScanner();
     }
 
-    private int chooseTheMenuOption() {
+    private int chooseTheMenuOptionAndInitialize() {
         displayStartGameMenu();
 
         do {
@@ -88,21 +80,8 @@ public class ConnectFour {
                 board = new Board();
                 break;
             } else if (connectFourUI.getIntegerInput() == 2) {
-                boardFileHandle = new FileHandling();
-                connectFourUI.getUserInput("Please enter a name of the file to load from: ", fileNameLoad);
-                if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
-                    try {
-                        Board testBoard = new Board();
-                        testBoard.validateBoardFromFile(boardFileHandle.toString());
-                        board = new Board(boardFileHandle.toString());
-                        player = new Player(board.getPlayerTurnToGoNext());   
-                        break;
-                    } catch (ThrowExceptionWrongBoardFormat wrongFormatEx){
-                        connectFourUI.printString("Couldn't load this file: " + wrongFormatEx.getMessage() + "\n");
-                    } catch (ThrowExceptionTheGameHasEnded gameEndedEx) {
-                        connectFourUI.printString(gameEndedEx.getMessage());
-                    }
-                }
+                hadleStepsToLoadFromFile();
+                break;
             } else if (connectFourUI.getIntegerInput() == 3) {
                 break;
             }
@@ -112,11 +91,27 @@ public class ConnectFour {
         return connectFourUI.getIntegerInput();
     }
 
+    private void hadleStepsToLoadFromFile() {
+        boardFileHandle = new FileHandling();
+        connectFourUI.getUserInput("Please enter a name of the file to load from: ", fileNameLoad);
+        if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
+            try {
+                Board testBoard = new Board();
+                testBoard.validateBoardFromFile(boardFileHandle.toString());
+                board = new Board(boardFileHandle.toString());
+                player = new Player(board.getPlayerTurnToGoNext());   
+            } catch (ThrowExceptionWrongBoardFormat wrongFormatEx){
+                connectFourUI.printString("Couldn't load this file: " + wrongFormatEx.getMessage() + "\n");
+            } catch (ThrowExceptionTheGameHasEnded gameEndedEx) {
+                connectFourUI.printString(gameEndedEx.getMessage());
+            }
+        }
+    }
+
     private void promptForAutoSaveAndContinuousGame() {
         if (connectFourUI.getIntegerInput() != 3) {
-            connectFourUI.printString("Would you like to turn on auto saving?\n");
-            connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
-            if (connectFourUI.getCharacterInput() == 'y') {
+            if (promptUser("Would you like to turn on auto saving?\n", 
+                           "Please enter y for 'yes' and n for 'no': ") == 'y') {
                 setAutoSave(true);
             } else {
                 setAutoSave(false);
@@ -124,9 +119,8 @@ public class ConnectFour {
         }
 
         if (connectFourUI.getIntegerInput() != 3) {
-            connectFourUI.printString("Would you like to play the game till the end (no prompts for continuing)?\n");
-            connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
-            if (connectFourUI.getCharacterInput() == 'y') {
+            if (promptUser("Would you like to play the game till the end (no prompts for continuing)?\n", 
+                           "Please enter 'y' or 'n': ") == 'y') {
                 setPlayingTillTheEnd(true);
                 setSkipVariable(true);
             } else {
@@ -137,35 +131,39 @@ public class ConnectFour {
 
     private void additionalUserPrompts() {
         if (!getAutoSaveValue()) {
-            connectFourUI.printString("Would you like to save the board?\n");            
-            connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
-            if (connectFourUI.getCharacterInput() == 'y') {
-                boardFileHandle = new FileHandling();
-                connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
-                if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
-                    connectFourUI.printString("Board for successfully saved\n");
-                }
+            if (promptUser("Would you like to save the board?\n", "Please enter 'y' or 'n': ") == 'y') {
+                handleStepsToSaveToFile();
             } else {
                 connectFourUI.printString("The Board is not Saved\n\n");
             }
         } else {
-            boardFileHandle = new FileHandling();
-            connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
-            if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
-                connectFourUI.printString("Board for successfully saved\n");
-            }
+            handleStepsToSaveToFile();
         }
 
         if (!getPlayingTillTheEnd()) {
-            connectFourUI.printString("Would you like to return to the main menu or continue playing?\n");
-            connectFourUI.getUserInput("Please enter y to return and n to continue: ", character);
-            if (connectFourUI.getCharacterInput() == 'n') {
+            if (promptUser("Would you like to return to the main menu or continue playing?\n",
+                           "Please enter 'y' to return and 'n' to continue: ") == 'n') {
                 setSkipVariable(true);
             } else {
                 setSkipVariable(false);
             }
         }
         connectFourUI.printString("\n");
+    }
+
+    private void handleStepsToSaveToFile() {
+        boardFileHandle = new FileHandling();
+        connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
+
+        if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
+            connectFourUI.printString("Board for successfully saved\n");
+        }
+    }
+
+    private char promptUser(String questionToAsk, String inputToAskFor) {
+        connectFourUI.printString(questionToAsk);            
+        connectFourUI.getUserInput(inputToAskFor, character);
+        return connectFourUI.getCharacterInput();
     }
 
     /**

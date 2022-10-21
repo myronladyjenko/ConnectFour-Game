@@ -50,6 +50,7 @@ public class TextUI {
             } catch (ThrowExceptionNoSuchFileExists incorrectFileName) {
                 printString(incorrectFileName.getMessage() + "\n");
             }
+            printString("\n");
         } while (true);
     }
 
@@ -139,11 +140,11 @@ public class TextUI {
     }
 
     /**
-     * This function returns a string representation of the object.
+     * The toString() function is a function that returns a string
      * 
-     * @return The string is being returned.
+     * @return A string.
      */
     public String toString() {
-        return "I am scanning, handling and printing!";
+        return "I am a TextUI and I am here to connect to the user\n";
     }
 }
