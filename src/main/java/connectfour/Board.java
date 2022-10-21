@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 public class Board {
     private ArrayList<BoardCell> cellBoard;
-    private boolean successfullUpdate;
     private boolean isWinner;
     private int winPosition;
-    private boolean allowedMove;
+    private int availablePositionNumber;
 
     private final int numOfRows = 6;  
     private final int numOfColumns = 7;
@@ -19,10 +18,9 @@ public class Board {
         cellBoard = new ArrayList<BoardCell>();
 
         createEmptyBoard();
-        setBoardUpdateValue(false);
         setWinnerValue(false);
         setWinPosition(-1);
-        setAllowedMove();
+        setAvailablePosNumber(-1);
     }
 
     private void createEmptyBoard() {
@@ -32,110 +30,62 @@ public class Board {
     }
 
     /**
-     * This method updates the board in the strBoardBuilder object
-     * @param inputColumn position on the board inputed by the user
-     * @param currTurn current player turn ('X' or 'O')
-     * @return true if board got updated successfully and false otherwise
+     * 
+     * @param currTurn
      */
-    public boolean updateBoard(int inputColumn, char currTurn) {
-        setBoardUpdateValue(false);
-        
-
-        int availablePosition = findAvailablePosition(inputColumn);
-
-        if (availablePosition != -1 && correctMove.checkBoardMove(availablePosition, cellBoard)) {
-            cellBoard.add(availablePosition + 1, new BoardCell((char)currTurn));
-            cellBoard.remove(availablePosition);
-            setBoardUpdateValue(true);
-        }
-        return getBoardUpdateValue();
-    }
-
-    private int findAvailablePosition(int inputColumn) {
-        int emptyPositionNumber = -1;
-        if (correctMove.validateColumnInput(inputColumn)) {
-            int currentCellPosition = inputColumn - 1;
-            do {
-                if (cellBoard.get(currentCellPosition).isCellEmpty()) {
-                   emptyPositionNumber = currentCellPosition;
-                    break;
-                }
-                currentCellPosition += numOfColumns;
-            } while (currentCellPosition < numOfColumns * numOfRows);
-        
-            if (emptyPositionNumber == -1) {
-                System.out.println("The column is filled. Please choose a different column");
-            }
-        }
-        return emptyPositionNumber;
+    public void updateBoard(char currTurn) {
+        cellBoard.set(getAvailablePosNumber(), new BoardCell((char)currTurn));
     }
 
     /**
-     * The method checks whether the move inputed by the user is allowed on the board
-     * @param inputColumn position of where to do a move on the board
-     * @param boardOfCells List that represents values on stored on the board (1 to 9, 'X', or 'O')
-     * @return whether the user is allowed to make a move (true) or not
+     * 
+     * @param userInputColumn
+     * @return
+     * @throws ThrowExceptionWrongMoveOnBoard
      */
-    public boolean checkBoardMove(int inputColumn, ArrayList<BoardCell> boardOfCells) {
-        setAllowedMove();
-        
-        checkOutOfBounds(inputColumn);
+    public void validateMoveOnBoard(int userInputColumn) throws ThrowExceptionWrongMoveOnBoard {
         do {
-            if (!getAllowedMove()) {
-                printErrorMessage("Error - Entered Board Position is out of Bounds");
-                allowedMove = false;
-                break;
+            if (!validateColumnInput(userInputColumn)) {
+                throw new ThrowExceptionWrongMoveOnBoard("Inputed column is out of range: " + userInputColumn);
             }
-        
-            validateMove(inputColumn, boardOfCells);
-            if (!getAllowedMove()) {
-                printErrorMessage("Error - Illegal Move: entered position is filled");
-                allowedMove = false;
+
+            findAvailablePosition(userInputColumn);
+            if (getAvailablePosNumber() == -1) {
+                throw new ThrowExceptionWrongMoveOnBoard("The column is full");
             }
         } while(false);
-
-        return getAllowedMove();
     }
 
-    private void validateMove(int inputColumn, ArrayList<BoardCell> boardOfCells) {
-        BoardCell cell = boardOfCells.get(inputColumn);
-
-        if (!cell.isCellEmpty()) {
-            allowedMove = false;
-        }
+    /**
+     * 
+     * @param inputColumn
+     */
+    private void findAvailablePosition(int inputColumn) {
+        setAvailablePosNumber(-1);
+        int currentCellPosition = inputColumn - 1;
+        do {
+            if (cellBoard.get(currentCellPosition).isCellEmpty()) {
+                setAvailablePosNumber(currentCellPosition);
+                break;
+            }
+            currentCellPosition += numOfColumns;
+        } while (currentCellPosition < numOfColumns * numOfRows);
     }
 
-    public boolean validateColumnInput(int inputColumn) {
+    private boolean validateColumnInput(int inputColumn) {
         if (inputColumn > numOfColumns || inputColumn <= 0) {
             return false;
         }
         return true;
     }
 
-    private void checkOutOfBounds(int inputColumn) {
-        if (inputColumn > (numOfColumns * numberOfRows - 1) || inputColumn < 0) {
-            allowedMove = false;
-        }
+    public void setAvailablePosNumber(int posNumber) {
+        availablePositionNumber = posNumber;
     }
 
-    private void printErrorMessage(String errorMessage) {
-        System.out.println(errorMessage);
+    public int getAvailablePosNumber() {
+        return availablePositionNumber;
     }
-
-    private void setAllowedMove() {
-        allowedMove = true;
-    }
-
-    private boolean getAllowedMove() {
-        return allowedMove;
-    }
-
-
-
-
-
-
-
 
     /**
      * This method checks whether the board contains a winning condition for either 'X' or 'O'
@@ -316,7 +266,7 @@ public class Board {
 
             row += "|     |     |     |     |     |     |     |\n";
             for (int j = i * numOfColumns; j < (i + 1) * numOfColumns; j++) {
-                row += "|  " + cellBoard.get(j) + "  ";
+                row += "|  " + cellBoard.get(j).toString() + "  ";
             }
             row += "|\n";
             if (i != 0) {
@@ -340,14 +290,6 @@ public class Board {
 
     private boolean getWinnerValue() {
         return isWinner;
-    }
-
-    private void setBoardUpdateValue(boolean valueToUpdateTo) {
-        successfullUpdate = valueToUpdateTo;
-    }
-
-    private boolean getBoardUpdateValue() {
-        return successfullUpdate;
     }
 
     private void setWinPosition(int foundWinPosition) {

@@ -4,68 +4,45 @@ import java.util.Scanner;
 
 public class TextUI {
     private Scanner scanner;
-    private int userInputPosition;
-    private final int menuOption = 0;
+    private ConnectFour connectFour;
+    private int userInputInteger;
+    private char userInputCharacter;
+    private final int character = 0;
+    private final int integer = 1;
+    private final int boardPosition = 2;
 
     public TextUI() {
         scanner = new Scanner(System.in);
     }
 
-    public int getUserInputForIntegers(String messageForTheUser, int userInputOption) {
-        setInputPosition(-1);
-
+    public void getUserInput(String messageForTheUser, int typeToCheckFor) {
         do {
             printString(messageForTheUser);
             try {
-                setInputPosition(scanner.nextInt());
-            } catch (Exception e) {
-                scanner.nextLine();
-            }
+                String userInputString = scanner.nextLine();
 
-            if (userInputOption == menuOption && !checkRangeForMenuOptions(getIntegerInput())) {
-                setInputPosition(-1);
+                handleExceptions(typeToCheckFor, userInputString);
+                break;
+            } catch (ThrowExceptionForInvalidInput incorrectInputEx) {
+                printString(incorrectInputEx.getMessage() + "\n");
+            } catch (ThrowExceptionWrongMoveOnBoard incorrectMoveEx) {
+                printString(incorrectMoveEx.getMessage() + "\n");
             }
-        } while (getIntegerInput() == -1);
-        //clear the input in case multiple values are inputed on the same line
-        scanner.nextLine();
-
-        return getIntegerInput();
+        } while (true);
     }
 
-    private boolean checkRangeForMenuOptions(int userChoice) {
-        if (userChoice < 1 || userChoice > 3) {
-            return false;
+    private void handleExceptions(int inputTypeToCheckFor, String inputString) 
+                                  throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard {
+        if (inputTypeToCheckFor == character) {
+            connectFour.validateMove(inputTypeToCheckFor, inputString);
+            setCharacterInput(inputString);
+        } else if (inputTypeToCheckFor == integer) {
+            connectFour.validateMove(inputTypeToCheckFor, inputString);
+            setIntegerInput(inputString);
+        } else if (inputTypeToCheckFor == boardPosition) {
+            connectFour.validateMove(inputTypeToCheckFor, inputString);
+            setIntegerInput(inputString);
         }
-        return true;
-    }
-
-    public char getUserInputForCharacters(String messageForTheUser) {
-        String str = "";
-        char userChoice = '\0';
-        do {
-            printString(messageForTheUser);
-            try {
-                str += scanner.nextLine();
-
-                if (str.length() == 2) {
-                    str.replace("\n", "\0");
-                } else if (str.length() == 1) {
-                    userChoice = str.charAt(0);
-                }
-            } catch (Exception e) {
-                // throw stuff here
-            }
-            userChoice = validateCharInput(userChoice);
-        } while (userChoice == '\0');
-        return userChoice;
-    }
-
-    private char validateCharInput(char userChoice) {
-        if (userChoice == 'y' || userChoice == 'n') {
-            return userChoice;
-        }
-        userChoice = '\0';
-        return userChoice;
     }
 
     public void printString(String stringToPrint) {
@@ -76,11 +53,23 @@ public class TextUI {
         scanner.close();
     }
 
-    private void setInputPosition(int currentPosition) {
-        userInputPosition = currentPosition;
+    private void setIntegerInput(String userInput) {
+        userInputInteger = Integer.parseInt(userInput.toString());
     }
 
-    private int getIntegerInput() {
-        return userInputPosition;
+    private void setCharacterInput(String userInput) {
+        userInputCharacter = userInput.charAt(0);
+    }
+
+    public int getIntegerInput() {
+        return userInputInteger;
+    }
+
+    public char getCharacterInput() {
+        return userInputCharacter;
+    }
+
+    public void setGame(ConnectFour game) {
+        connectFour = game;
     }
 }
