@@ -7,6 +7,7 @@ public class Board {
     private boolean isWinner;
     private int winPosition;
     private int availablePositionNumber;
+    private char playerToGoNext;
 
     private final int numOfRows = 6;  
     private final int numOfColumns = 7;
@@ -21,12 +22,103 @@ public class Board {
         setWinnerValue(false);
         setWinPosition(-1);
         setAvailablePosNumber(-1);
+        setPlayerToGoNext('-');
+    }
+
+    public Board(StringBuilder stringBoard) {
+        cellBoard = new ArrayList<BoardCell>();
+
+        createBoardFromString(stringBoard);
+        setWinnerValue(false);
+        setWinPosition(-1);
+        setAvailablePosNumber(-1);
+    }
+
+    private void createBoardFromString(StringBuilder stringBoard) {
+        String sBoard = stripString(stringBoard);
+        for (int i = numOfRows - 1; i >= 0; i--) {
+            for (int j = i * numOfColumns; j < ((i + 1) * numOfColumns); j++) {
+                if (sBoard.charAt(j) == '1') {
+                    cellBoard.add(new BoardCell('X'));
+                } else if (sBoard.charAt(j) == '2') {
+                    cellBoard.add(new BoardCell('O'));
+                } else {
+                    cellBoard.add(new BoardCell('_'));
+                }
+            }
+        }
+        determineNextPlayerToGo(sBoard);
+    }
+
+    private void determineNextPlayerToGo(String sBoard) {
+        int countOnes = 0;
+        int countTwos = 0;
+        for (int i = 0; i < numOfColumns * numOfRows; i++) {
+            if (sBoard.charAt(i) == '1') {
+                countOnes++;
+            } else if (sBoard.charAt(i) == '2') {
+                countTwos++;
+            }
+        }
+
+        if (countOnes >= countTwos) {
+            setPlayerToGoNext('O');
+        } else {
+            setPlayerToGoNext('X');
+        }
+    }
+
+    private String stripString(StringBuilder stringBoard) {
+        String str = "";
+        str += stringBoard.toString();
+        str = str.replaceAll(",", "");
+        str = str.replaceAll("\n", "");
+        str = str.replaceAll(" ", "");
+
+        return str;
+    }
+
+    public void validateBoardFromFile(StringBuilder strBoard) throws ThrowExceptionWrongBoardFormat {
+        int countOnes = 0;
+        int countTwos = 0;
+
+        String sBoard = stripString(strBoard);
+        if (sBoard.length() != numOfColumns * numOfRows) {
+            throw new ThrowExceptionWrongBoardFormat("Length of the board read from"
+                                                     + "file doesn't match the expected one. Please restart");
+        }
+
+        for (int i = 0; i < numOfColumns * numOfRows; i++) {
+            if (sBoard.charAt(i) != '0' 
+                && sBoard.charAt(i) != '1'
+                && sBoard.charAt(i) != '2') {
+                throw new ThrowExceptionWrongBoardFormat("The file contains unexpected symbols. Please restart");
+            }
+
+            if (sBoard.charAt(i) == '1') {
+                countOnes++;
+            }
+            if (sBoard.charAt(i) == '2') {
+                countTwos++;
+            }
+        }
+        if (Math.abs(countOnes - countTwos) >= 2) {
+            throw new ThrowExceptionWrongBoardFormat("One player did two many moves. Please restart");
+        }
     }
 
     private void createEmptyBoard() {
         for (int i = 0; i < numOfRows * numOfColumns; i++) {
             cellBoard.add(new BoardCell('_'));
         }
+    }
+
+    public char getPlayerTurnToGoNext() {
+        return playerToGoNext;
+    }
+
+    private void setPlayerToGoNext(char nextPlayer) {
+        playerToGoNext = nextPlayer;
     }
 
     /**
@@ -254,6 +346,30 @@ public class Board {
         rowOfAllowedMoves += " ----- ----- ----- ----- ----- ----- ----- \n";
         return rowOfAllowedMoves;
     }
+
+    public String getFIleFormatStringRepresantionOfBoard() {
+        String stringBoardForFile = "";
+        for (int i = numOfRows - 1; i >= 0; i--) {
+            for (int j = i * numOfColumns; j < ((i + 1) * numOfColumns); j++) {
+                if (cellBoard.get(j).toString().equals("X")) {
+                    stringBoardForFile += "1";
+                } else if (cellBoard.get(j).toString().equals("O")) {
+                    stringBoardForFile += "2";
+                } else {
+                    stringBoardForFile += "0";
+                }
+
+                if ((j + 1) % numOfColumns != 0) {
+                    stringBoardForFile += ",";
+                }
+            }
+            if (i != 0) {
+                stringBoardForFile += "\n";
+            }
+        }
+
+        return stringBoardForFile;
+    }
     
     /**
      * 
@@ -298,14 +414,6 @@ public class Board {
 
     private int getWinPosition() {
         return this.winPosition;
-    }
-
-/* this is a do-nothing method that was put here only so 
-you could have an example of junit testing.  Once you have other
-methods in the Board class and other tests you should delete
-this method and this comment */
-    public int returnSomething() {
-        return 1;
     }
 
 }

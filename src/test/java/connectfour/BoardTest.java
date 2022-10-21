@@ -23,14 +23,6 @@ public class BoardTest{
 
     }
 
-    // @Test
-    public void someTestHere(){
-        /* to see what happens when a test fails, change
-        the 1 to any other number in the statement below */
-        Assert.assertEquals(tester.returnSomething(), 1);
-        
-    }
-
     @Test
     public void testPrintBoard() {
         Board board = new Board();

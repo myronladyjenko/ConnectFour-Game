@@ -7,6 +7,10 @@ public class Player {
         setFirstTurn();
     }
 
+    public Player(char currPLayerTurn) {
+        setCurrentTurn(currPLayerTurn);
+    }
+
     /**
      * This method gets the turn of the player
      * @return next players turn: 'X' or 'O'
@@ -39,6 +43,10 @@ public class Player {
         } else {
             playerTurn = 'O';
         }
+    }
+
+    private void setCurrentTurn(char currPlayerTurn) {
+        playerTurn = currPlayerTurn;
     }
     
 }

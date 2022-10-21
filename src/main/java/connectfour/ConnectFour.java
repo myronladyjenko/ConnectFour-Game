@@ -3,34 +3,60 @@ package connectfour;
 public class ConnectFour {
     private Board board;
     private Player player;
+    private BoardFileHandling boardFileHandle;
     private TextUI connectFourUI;
     private boolean skipVariable;
+    private StringBuilder strToStoreBoard;
     private boolean autoSave;
     private boolean playingTillTheEnd;
+
     private final int character = 0;
     private final int integer = 1;
     private final int boardPosition = 2;
+    private final int fileNameLoad = 3;
+    private final int fileNameSave = 4;
 
     public ConnectFour() {
         setSkipVariable(false);
         setAutoSave(false);
         setPlayingTillTheEnd(false);
+        strToStoreBoard = new StringBuilder("");
     }
 
     private int chooseTheMenuOption() {
         displayStartGameMenu();
 
-        connectFourUI.getUserInput("Please, choose a correct option (1-3): ", integer);
-        connectFourUI.printString("\n");
+        do {
+            connectFourUI.getUserInput("Please, choose a correct option (1-3): ", integer);
+            connectFourUI.printString("\n");
+            if (connectFourUI.getIntegerInput() == 1) {
+                player = new Player();
+                board = new Board();
+                break;
+            } else if (connectFourUI.getIntegerInput() == 2) {
+                boardFileHandle = new BoardFileHandling();
+                connectFourUI.getUserInput("Please enter a name of the file to load from: ", fileNameLoad);
+                if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
+                    try {
+                        Board testBoard = new Board();
+                        testBoard.validateBoardFromFile(strToStoreBoard);
+                        board = new Board(strToStoreBoard);
+                        player = new Player(board.getPlayerTurnToGoNext());   
+                        break;
+                    } catch (ThrowExceptionWrongBoardFormat wrongFormatEx){
+                        connectFourUI.printString("Couldn't load this file: " + wrongFormatEx.getMessage() + "\n");
+                    }
+                }
+            } else if (connectFourUI.getIntegerInput() == 3) {
+                break;
+            }
+        } while (true);
+    
+        promptForAutoSaveAndContinuousGame();
+        return connectFourUI.getIntegerInput();
+    }
 
-        if (connectFourUI.getIntegerInput() == 1) {
-            player = new Player();
-            board = new Board();
-        } else if (connectFourUI.getIntegerInput() == 2) {
-            // load game from a file
-            connectFourUI.printString("Board Loaded from a File\n");
-        }
-
+    private void promptForAutoSaveAndContinuousGame() {
         if (connectFourUI.getIntegerInput() != 3) {
             connectFourUI.printString("Would you like to turn on auto saving?\n");
             connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
@@ -46,12 +72,11 @@ public class ConnectFour {
             connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
             if (connectFourUI.getCharacterInput() == 'y') {
                 setPlayingTillTheEnd(true);
+                setSkipVariable(true);
             } else {
                 setPlayingTillTheEnd(false);
             }
         }
-    
-        return connectFourUI.getIntegerInput();
     }
 
     public void playGame() {
@@ -59,7 +84,6 @@ public class ConnectFour {
 
         while (getSkipVariable() || chooseTheMenuOption() != 3) {
             StringBuilder messageAboutWinner = new StringBuilder("");
-
             connectFourUI.printString(board.toString() + "\n");
             connectFourUI.printString(board.constructRowOfAllowedMoves());
             connectFourUI.printString("\nTurn - " + player.getTurn() + "\n");
@@ -74,39 +98,51 @@ public class ConnectFour {
                 displayFinalResultsForGame();
                 setSkipVariable(false);
                 continue;
-                
             } else {
                 connectFourUI.printString("Current board state: \n");
                 connectFourUI.printString(board.toString() + "\n\n");
             }
 
-            if (!getAutoSaveValue()) {
-                connectFourUI.printString("Would you like to save the board?\n");            
-                connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
-                if (connectFourUI.getCharacterInput() == 'y') {
-                    // save to file
-                    connectFourUI.printString("Saving the Board\n\n");
-                } else {
-                    connectFourUI.printString("Not Saving the Board\n\n");
-                }
-            }
-
-            if (!getPlayingTillTheEnd()) {
-                connectFourUI.printString("Would you like to return to the main menu or continue playing?\n");
-                connectFourUI.getUserInput("Please enter y to return to main and n to continue playing: ", character);
-
-                if (connectFourUI.getCharacterInput() == 'n') {
-                    setSkipVariable(true);
-                } else {
-                    setSkipVariable(false);
-                }
-            }
+            additionalUserPrompts();
         }
         connectFourUI.closeScanner();
     }
 
+    private void additionalUserPrompts() {
+        if (!getAutoSaveValue()) {
+            connectFourUI.printString("Would you like to save the board?\n");            
+            connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
+            if (connectFourUI.getCharacterInput() == 'y') {
+                boardFileHandle = new BoardFileHandling();
+                connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
+                if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
+                    connectFourUI.printString("Board for successfully saved\n");
+                }
+            } else {
+                connectFourUI.printString("The Board is not Saved\n\n");
+            }
+        } else {
+            boardFileHandle = new BoardFileHandling();
+            connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
+            if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
+                connectFourUI.printString("Board for successfully saved\n");
+            }
+        }
+
+        if (!getPlayingTillTheEnd()) {
+            connectFourUI.printString("Would you like to return to the main menu or continue playing?\n");
+            connectFourUI.getUserInput("Please enter y to return and n to continue: ", character);
+            if (connectFourUI.getCharacterInput() == 'n') {
+                setSkipVariable(true);
+            } else {
+                setSkipVariable(false);
+            }
+        }
+        connectFourUI.printString("\n");
+    }
+
     public void validateMove(int typeToCheckFor, String userInput) 
-                             throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard {
+                throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionNoSuchFileExists{
         if (typeToCheckFor == character) {
             validateCharInput(userInput);
         } else if (typeToCheckFor == integer) {
@@ -119,7 +155,21 @@ public class ConnectFour {
                 throw new ThrowExceptionForInvalidInput("The input wasn't converted to an integer.");
             }
             checkMoveOnBoard(userIntegerInput);
+        } else if (typeToCheckFor == fileNameLoad) {
+            tryLoadingFromFile(userInput);
+        } else if (typeToCheckFor == fileNameSave) {
+            trySavingToFile(userInput);
         }
+    }
+
+    private boolean tryLoadingFromFile(String userString) throws ThrowExceptionNoSuchFileExists {
+        boardFileHandle.loadFile(userString, strToStoreBoard);
+        return true;
+    }
+
+    private boolean trySavingToFile(String userString) throws ThrowExceptionNoSuchFileExists {
+        boardFileHandle.saveToFile(userString, board.getFIleFormatStringRepresantionOfBoard());
+        return true;
     }
 
     private void checkRangeForMenuOptions(String userChoice) throws ThrowExceptionForInvalidInput {

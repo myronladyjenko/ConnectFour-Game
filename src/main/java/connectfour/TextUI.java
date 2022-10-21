@@ -7,12 +7,18 @@ public class TextUI {
     private ConnectFour connectFour;
     private int userInputInteger;
     private char userInputCharacter;
+    private String userFileNameInput;
     private final int character = 0;
     private final int integer = 1;
     private final int boardPosition = 2;
+    private final int fileNameLoad = 3;
+    private final int fileNameSave = 4;
 
     public TextUI() {
         scanner = new Scanner(System.in);
+        setCharacterInput("\0");
+        setFileNameInput("invalidName");
+        setIntegerInput("-1");
     }
 
     public void getUserInput(String messageForTheUser, int typeToCheckFor) {
@@ -27,12 +33,14 @@ public class TextUI {
                 printString(incorrectInputEx.getMessage() + "\n");
             } catch (ThrowExceptionWrongMoveOnBoard incorrectMoveEx) {
                 printString(incorrectMoveEx.getMessage() + "\n");
+            } catch (ThrowExceptionNoSuchFileExists incorrectFileName) {
+                printString(incorrectFileName.getMessage() + "\n");
             }
         } while (true);
     }
 
     private void handleExceptions(int inputTypeToCheckFor, String inputString) 
-                                  throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard {
+                throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionNoSuchFileExists {
         if (inputTypeToCheckFor == character) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setCharacterInput(inputString);
@@ -42,7 +50,13 @@ public class TextUI {
         } else if (inputTypeToCheckFor == boardPosition) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setIntegerInput(inputString);
-        }
+        } else if (inputTypeToCheckFor == fileNameLoad) {
+            connectFour.validateMove(inputTypeToCheckFor, inputString);
+            setFileNameInput(inputString);
+        } else if (inputTypeToCheckFor == fileNameSave) {
+            connectFour.validateMove(inputTypeToCheckFor, inputString);
+            setFileNameInput(inputString);
+        } 
     }
 
     public void printString(String stringToPrint) {
@@ -67,6 +81,14 @@ public class TextUI {
 
     public char getCharacterInput() {
         return userInputCharacter;
+    }
+
+    private void setFileNameInput(String userInput) {
+        userFileNameInput = userInput;
+    }
+
+    public String getFileNameInput() {
+        return userFileNameInput;
     }
 
     public void setGame(ConnectFour game) {
