@@ -10,10 +10,19 @@ package connectfour;
 public class Player {
         private char playerTurn;
 
+    /**
+     * This is an empty constructor used to initialize private members of the class to 
+     * the player, who will start the game (randomly selects either 'X' or 'O').
+     */
     public Player() {
         setFirstTurn();
     }
 
+    /**
+     * This is an overloaded constructor used to set player turn to be the player passed in
+     * as a prameter
+     * @param currPLayerTurn this is current player to make a turn
+     */
     public Player(char currPLayerTurn) {
         setCurrentTurn(currPLayerTurn);
     }

@@ -10,6 +10,11 @@ package connectfour;
 public class BoardCell {
     private char cellValue; 
 
+    /**
+     * This is used to set the value of the private member cellValue. 
+     * 
+     * @param valueToSetCellTo This is a value the Cell would be set to
+     */
     public BoardCell(char valueToSetCellTo) {
         setCellValue(valueToSetCellTo);
     }

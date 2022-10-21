@@ -24,6 +24,11 @@ public class ConnectFour {
     private final int fileNameLoad = 3;
     private final int fileNameSave = 4;
 
+    
+    /**
+     *  This is the constructor for the ConnectFour class. It is setting the default values for the
+     *  private member variables.
+     */
     public ConnectFour() {
         setSkipVariable(false);
         setAutoSave(false);

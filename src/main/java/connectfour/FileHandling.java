@@ -18,6 +18,10 @@ public class FileHandling {
     private boolean successfulLoadFromFile;
     private StringBuilder strToStoreBoard;
     
+    /**
+     * This is an empty constructor used to initalize private 
+     * members of this class to 'false' values.
+     */
     public FileHandling() {
         setStatusOfLoadOrSaveFromFile(false);
         strToStoreBoard = new StringBuilder("");

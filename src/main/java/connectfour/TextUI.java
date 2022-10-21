@@ -21,6 +21,10 @@ public class TextUI {
     private final int fileNameLoad = 3;
     private final int fileNameSave = 4;
 
+    /**
+     * This is an empty constructor used to initialize private members of 
+     * this class to invalid values
+     */
     public TextUI() {
         scanner = new Scanner(System.in);
         setCharacterInput("\0");
@@ -145,6 +149,6 @@ public class TextUI {
      * @return A string.
      */
     public String toString() {
-        return "I am a TextUI and I am here to connect to the user\n";
+        return "I am a TextUI and I am here to connect to the user.\n";
     }
 }

@@ -20,6 +20,10 @@ public class Board {
     private final int numOfRows = 6;  
     private final int numOfColumns = 7;
 
+    /**
+     * This is an empty constructor. It is to create an empty Board
+     * This constructor also initializes some private instance variables
+     */
     public Board() {
         cellBoard = new ArrayList<BoardCell>();
 
@@ -30,6 +34,12 @@ public class Board {
         setPlayerToGoNext('-');
     }
 
+    /**
+     * This is an overloaded construcotr. This constructor is used to create a board from a 
+     * stringRepresentation. This constructor also initializes some private instance variables.
+     * 
+     * @param stringBoard this a stringRepresentation of the board
+     */
     public Board(String stringBoard) {
         cellBoard = new ArrayList<BoardCell>();
 
