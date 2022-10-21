@@ -12,7 +12,7 @@ package connectfour;
 public class ConnectFour {
     private Board board;
     private Player player;
-    private BoardFileHandling boardFileHandle;
+    private FileHandling boardFileHandle;
     private TextUI connectFourUI;
     private boolean skipVariable;
     private boolean autoSave;
@@ -56,7 +56,7 @@ public class ConnectFour {
                 connectFourUI.printString("Would you like to save the board?\n");            
                 connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
                 if (connectFourUI.getCharacterInput() == 'y') {
-                    boardFileHandle = new BoardFileHandling();
+                    boardFileHandle = new FileHandling();
                     connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
                     if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
                         connectFourUI.printString("Board for successfully saved\n");
@@ -88,7 +88,7 @@ public class ConnectFour {
                 board = new Board();
                 break;
             } else if (connectFourUI.getIntegerInput() == 2) {
-                boardFileHandle = new BoardFileHandling();
+                boardFileHandle = new FileHandling();
                 connectFourUI.getUserInput("Please enter a name of the file to load from: ", fileNameLoad);
                 if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
                     try {
@@ -140,7 +140,7 @@ public class ConnectFour {
             connectFourUI.printString("Would you like to save the board?\n");            
             connectFourUI.getUserInput("Please enter y for 'yes' and n for 'no': ", character);
             if (connectFourUI.getCharacterInput() == 'y') {
-                boardFileHandle = new BoardFileHandling();
+                boardFileHandle = new FileHandling();
                 connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
                 if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
                     connectFourUI.printString("Board for successfully saved\n");
@@ -149,7 +149,7 @@ public class ConnectFour {
                 connectFourUI.printString("The Board is not Saved\n\n");
             }
         } else {
-            boardFileHandle = new BoardFileHandling();
+            boardFileHandle = new FileHandling();
             connectFourUI.getUserInput("Please enter a name of the file to save to: ", fileNameSave);
             if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
                 connectFourUI.printString("Board for successfully saved\n");
@@ -234,9 +234,9 @@ public class ConnectFour {
 
     private void displayStartGameMenu() {
         connectFourUI.printString("Choose one of the options below to proceed:\n");
-        connectFourUI.printString("1. Start a new game\n");
-        connectFourUI.printString("2. Load a game from a file\n");
-        connectFourUI.printString("3. Exit\n");
+        connectFourUI.printString("(1.) Start a new game\n");
+        connectFourUI.printString("(2.) Load a game from a file\n");
+        connectFourUI.printString("(3.) Exit\n");
     }
 
     private void displayFinalResultsForGame() {

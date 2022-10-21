@@ -14,11 +14,11 @@ import java.nio.file.Path;
  * 
  * @author Myron Ladyjenko
  */
-public class BoardFileHandling {
+public class FileHandling {
     private boolean successfulLoadFromFile;
     private StringBuilder strToStoreBoard;
     
-    public BoardFileHandling() {
+    public FileHandling() {
         setStatusOfLoadOrSaveFromFile(false);
         strToStoreBoard = new StringBuilder("");
     }
