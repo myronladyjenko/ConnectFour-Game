@@ -22,7 +22,7 @@ public class BoardTest{
     }
 
     @Test
-    public void testBoardEmptyBoard() {
+    public void testEmptyBoard() {
         // Arrange 
         String emptyBoard = 
        "\n|     |     |     |     |     |     |     |\n"
@@ -195,7 +195,7 @@ public class BoardTest{
     }
 
     @Test
-    public void testSplitString() {
+    public void testStripString() {
         // Arrange
         Board boardOverLoaded = new Board("0,0,0,0,0,0,0\n"
                                          +"0,0,0,2,0,0,0\n"
@@ -317,7 +317,7 @@ public class BoardTest{
                                          +"0,0,1,2,1,1,0\n"
                                          +"1,1,2,1,2,2,0\n"
                                          +"2,1,1,2,2,2,0\n"
-                                         +"2,2,2,1,1,1,0");
+                                         +"1,2,2,1,1,1,0");
         StringBuilder obtainedMessage = new StringBuilder("\nWinner is " + "O");
         StringBuilder message = new StringBuilder(""); 
 
@@ -405,7 +405,7 @@ public class BoardTest{
                             +"0,1,1,2,1,1,0\n"
                             +"1,1,2,1,2,2,0\n"
                             +"2,1,1,2,2,2,0\n"
-                            +"2,2,2,1,1,1,0,9";
+                            +"2,2,2,1,1,1,0,2";
         Board boardOverLoaded = new Board(stringBoard);
 
         // Assert
@@ -420,13 +420,37 @@ public class BoardTest{
         }
     }
 
+    /*
+    @Test
+    public void testTooShortBoard() {
+        // Arrange
+        String stringBoard = "0,0,2,0,0,0,0\n"
+                            +"0,0,2,2,0,0,0\n"
+                            +"0,1,1,2,1,1,0\n"
+                            +"1,1,2,1,2,2,0\n"
+                            +"2,1,1,2,2,2,0\n"
+                            +"2,2,2,1,1,1";
+        Board boardOverLoaded = new Board(stringBoard);
+
+        // Assert
+        try {
+            boardOverLoaded.validateBoardFromFile(stringBoard);
+            Assert.fail();
+        } catch (ThrowExceptionWrongBoardFormat ex) {
+            Assert.assertTrue(ex instanceof ThrowExceptionWrongBoardFormat);
+            Assert.assertEquals("Length of the board read from file doesn't match the expected one. Please restart\n", ex.getMessage());
+        } catch (ThrowExceptionTheGameHasEnded ex) {
+            Assert.fail();
+        }
+    } */
+
     @Test
     public void testUnexpectedSymbols() {
         // Arrange
         String stringBoard = "0,0,2,0,0,0,0\n"
                             +"0,0,.,2,0,0,0\n"
                             +"0,1,1,2,1,1,0\n"
-                            +"1,1,2,1,a,2,0\n"
+                            +"1,1,2,1,2,2,0\n"
                             +"2,1,1,2,2,2,0\n"
                             +"2,2,2,1,1,1,0";
         Board boardOverLoaded = new Board(stringBoard);
@@ -469,12 +493,12 @@ public class BoardTest{
     @Test
     public void testGameHasWinner() {
         // Arrange
-        String stringBoard = "0,0,2,0,0,0,0\n"
-                            +"0,0,2,2,0,0,0\n"
-                            +"0,1,1,2,1,1,0\n"
+        String stringBoard = "0,0,0,0,0,0,0\n"
+                            +"0,0,0,0,0,0,0\n"
+                            +"0,0,0,2,1,2,0\n"
                             +"1,1,2,1,0,2,0\n"
-                            +"2,1,1,2,2,2,0\n"
-                            +"2,2,2,1,1,1,1";
+                            +"2,1,1,1,1,2,0\n"
+                            +"2,2,2,1,2,1,1";
         Board boardOverLoaded = new Board(stringBoard);
         StringBuilder message = new StringBuilder("");
 
