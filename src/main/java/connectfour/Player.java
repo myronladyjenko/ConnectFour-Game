@@ -57,9 +57,9 @@ public class Player {
 
         int rand = (int)(Math.random() * range) + min;
         if (rand == 1) {
-            playerTurn = 'X';
+            setCurrentTurn('X');
         } else {
-            playerTurn = 'O';
+            setCurrentTurn('O');
         }
     }
 

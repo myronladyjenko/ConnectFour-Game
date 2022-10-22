@@ -15,12 +15,6 @@ public class TextUI {
     private char userInputCharacter;
     private String userFileNameInput;
 
-    private final int character = 0;
-    private final int integer = 1;
-    private final int boardPosition = 2;
-    private final int fileNameLoad = 3;
-    private final int fileNameSave = 4;
-
     /**
      * This is an empty constructor used to initialize private members of 
      * this class to invalid values
@@ -60,21 +54,21 @@ public class TextUI {
 
     private void handleExceptions(int inputTypeToCheckFor, String inputString) 
                 throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionNoSuchFileExists {
-        if (inputTypeToCheckFor == character) {
+        if (inputTypeToCheckFor == connectFour.getConstCharacter()) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setCharacterInput(inputString);
-        } else if (inputTypeToCheckFor == integer) {
+        } else if (inputTypeToCheckFor == connectFour.getConstInteger()) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setIntegerInput(inputString);
-        } else if (inputTypeToCheckFor == boardPosition) {
+        } else if (inputTypeToCheckFor == connectFour.getConstBoardPosition()) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setIntegerInput(inputString);
-        } else if (inputTypeToCheckFor == fileNameLoad) {
+        } else if (inputTypeToCheckFor == connectFour.getConstFileNameLoad()) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setFileNameInput(inputString);
-        } else if (inputTypeToCheckFor == fileNameSave) {
-            connectFour.validateMove(inputTypeToCheckFor, inputString);
+        } else if (inputTypeToCheckFor == connectFour.getConstFileNameSave()) {
             setFileNameInput(inputString);
+            connectFour.validateMove(inputTypeToCheckFor, inputString);
         } 
     }
 

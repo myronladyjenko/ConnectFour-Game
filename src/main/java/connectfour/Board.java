@@ -43,6 +43,7 @@ public class Board {
     public Board(String stringBoard) {
         cellBoard = new ArrayList<BoardCell>();
 
+        setPlayerToGoNext('-');
         createBoardFromString(stringBoard);
         setWinnerValue(false);
         setWinPosition(-1);
@@ -106,22 +107,50 @@ public class Board {
      */
     public void validateBoardFromFile(String strBoard) 
                                       throws ThrowExceptionWrongBoardFormat, ThrowExceptionTheGameHasEnded {
-        int countOnes = 0;
-        int countTwos = 0;
 
         String sBoard = stripString(strBoard);
         if (sBoard.length() != numOfColumns * numOfRows) {
             throw new ThrowExceptionWrongBoardFormat("Length of the board read from"
-                                                     + "file doesn't match the expected one. Please restart");
+                                                     + " file doesn't match the expected one. Please restart\n");
         }
 
+        if (checkForUnexpectedSymbols(sBoard)) {
+            throw new ThrowExceptionWrongBoardFormat("The file contains unexpected symbols. Please restart\n");
+        }
+
+        if (checkIncorrectNumberOfMoves(sBoard)) {
+            throw new ThrowExceptionWrongBoardFormat("One player did too many moves. Please restart\n");
+        }
+
+        // check if the game has been already won
+        StringBuilder message = new StringBuilder("");
+        createBoardFromString(strBoard);
+        if (checkBoardWinner(message)) {
+            throw new ThrowExceptionTheGameHasEnded("The game on this board has finihsed. " + message);
+        }
+
+        if (checkIfBoardContainsFloatingCell(sBoard)) {
+            throw new ThrowExceptionWrongBoardFormat("Board contains floating cells, " 
+                                                    + "which is not allowed in ConnectFour. Please restart\n");
+        }
+    }
+
+    private boolean checkForUnexpectedSymbols(String sBoard) {
         for (int i = 0; i < numOfColumns * numOfRows; i++) {
             if (sBoard.charAt(i) != '0' 
                 && sBoard.charAt(i) != '1'
                 && sBoard.charAt(i) != '2') {
-                throw new ThrowExceptionWrongBoardFormat("The file contains unexpected symbols. Please restart");
+                return true;
             }
+        }
+        return false;
+    }
 
+    private boolean checkIncorrectNumberOfMoves(String sBoard) {
+        int countOnes = 0;
+        int countTwos = 0;
+
+        for (int i = 0; i < numOfColumns * numOfRows; i++) {
             if (sBoard.charAt(i) == '1') {
                 countOnes++;
             }
@@ -129,16 +158,36 @@ public class Board {
                 countTwos++;
             }
         }
-        if (Math.abs(countOnes - countTwos) >= 2) {
-            throw new ThrowExceptionWrongBoardFormat("One player did two many moves. Please restart");
-        } else {
-            StringBuilder message = new StringBuilder("");
-            createBoardFromString(strBoard);
 
-            if (checkBoardWinner(message)) {
-                throw new ThrowExceptionTheGameHasEnded("The game on this board has finihsed. " + message);
+        if (Math.abs(countOnes - countTwos) >= 2) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkIfBoardContainsFloatingCell(String sBoard) {
+        String column = "";
+        for (int i = numOfColumns; i > 0; i--) {
+            for (int j = numOfRows; j > 0; j--) {
+                int startPos = i * j - 1;
+                column += sBoard.charAt(startPos);
+            }
+            if (!checkColumn(column)) {
+                return true;
             }
         }
+        return false;
+    }
+
+    private boolean checkColumn(String column) {
+        char prevChar = column.charAt(0);
+        for (int i = 1; i < column.length(); i++) {
+            if (prevChar == '0' && column.charAt(i) != '0') {
+                return false;
+            }
+            prevChar = column.charAt(i);
+        }
+        return true;
     }
 
     /**
@@ -147,6 +196,7 @@ public class Board {
      * @param currTurn The current player's turn.
      */
     public void updateBoard(char currTurn) {
+        System.out.println(getAvailablePosNumber());
         cellBoard.set(getAvailablePosNumber(), new BoardCell((char)currTurn));
     }
 
@@ -212,13 +262,13 @@ public class Board {
                 break;
             }
 
-            forwardDiagonalCheck();
+            upSlopeDiagonalCheck();
             if (getWinnerValue()) {
                 setMessageForWinOrTie("\nWinner is " + cellBoard.get(getWinPosition()).toString(), stringToHoldMessage);
                 break;
             }
 
-            backwardDiagonalCheck();
+            downSlopeDiagonalCheck();
             if (getWinnerValue()) {
                 setMessageForWinOrTie("\nWinner is " + cellBoard.get(getWinPosition()).toString(), stringToHoldMessage);
                 break;
@@ -285,7 +335,7 @@ public class Board {
         }
     }
 
-    private void forwardDiagonalCheck() {
+    private void upSlopeDiagonalCheck() {
         int startPos = 0;
 
         for (int i = 0; i < numOfRows - 3; i++) {
@@ -309,7 +359,7 @@ public class Board {
         }
     }
 
-    private void backwardDiagonalCheck() {
+    private void downSlopeDiagonalCheck() {
         int startPos = 0;
 
         for (int i = 0; i < numOfRows - 3; i++) {
@@ -358,7 +408,7 @@ public class Board {
      * 
      * @return A string representation of the board.
      */
-    public String getFIleFormatStringRepresantionOfBoard() {
+    String getFIleFormatStringRepresantionOfBoard() {
         String stringBoardForFile = "";
         for (int i = numOfRows - 1; i >= 0; i--) {
             for (int j = i * numOfColumns; j < ((i + 1) * numOfColumns); j++) {
@@ -378,7 +428,6 @@ public class Board {
                 stringBoardForFile += "\n";
             }
         }
-
         return stringBoardForFile;
     }
 
@@ -390,23 +439,23 @@ public class Board {
         passedStringToHoldMessage.append(messageToPrint);
     }
 
-    private void setWinnerValue(boolean valueToUpdateTo) {
+    void setWinnerValue(boolean valueToUpdateTo) {
         isWinner = valueToUpdateTo;
     }
 
-    private boolean getWinnerValue() {
+    boolean getWinnerValue() {
         return isWinner;
     }
 
-    private void setWinPosition(int foundWinPosition) {
+    void setWinPosition(int foundWinPosition) {
         winPosition = foundWinPosition;
     }
 
-    private int getWinPosition() {
+    int getWinPosition() {
         return this.winPosition;
     }
 
-    private void setPlayerToGoNext(char nextPlayer) {
+    void setPlayerToGoNext(char nextPlayer) {
         playerToGoNext = nextPlayer;
     }
 
@@ -416,15 +465,15 @@ public class Board {
      * 
      * @return The player who is to go next.
      */
-    public char getPlayerTurnToGoNext() {
+    char getPlayerTurnToGoNext() {
         return playerToGoNext;
     }
 
-    private void setAvailablePosNumber(int posNumber) {
+    void setAvailablePosNumber(int posNumber) {
         availablePositionNumber = posNumber;
     }
 
-    private int getAvailablePosNumber() {
+    int getAvailablePosNumber() {
         return availablePositionNumber;
     }
 

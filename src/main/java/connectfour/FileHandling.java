@@ -38,7 +38,6 @@ public class FileHandling {
     public void loadFile(String fileName) throws ThrowExceptionNoSuchFileExists {
         String oneLine = "";
         BufferedReader myReader;
-        fileName = fileName.replace("\n", "\0");
         Path path = FileSystems.getDefault().getPath("assets/", fileName);
         try {
             myReader = Files.newBufferedReader(path);
@@ -60,7 +59,6 @@ public class FileHandling {
      * @param stringToWriteToFile The string (string representation of board) that you want to write to the file.
      */
     public void saveToFile(String fileName, String stringToWriteToFile) throws ThrowExceptionNoSuchFileExists {
-        fileName = fileName.replace("\n", "\0");
         checkFileExistsOtherwiseCreate("assets/", fileName);
 
         Path path = FileSystems.getDefault().getPath("assets/", fileName);
