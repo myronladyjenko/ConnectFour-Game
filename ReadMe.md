@@ -1,19 +1,24 @@
 # Connect Four Game
 
-The Connect Four game is a game that is played by two players. The game is played on the grid 6 by 7. Each player decides who they play for 'X' or 'O'. Connect Four game is a game with "gravity". The token can only be placed in one of the 7 columns and it falls all the way to the bottom or until it hits other player's piece. The game is played until 4 'X' or 'O' are found on the board (horizontally, vertically, or diagonally), then either 'X' or 'O' wins. If there are no possible moves left, or there no possible moves left in which case the game is a tie.
+!!! IMPORTANT !!! 
+In the code I reference user-defined exception class ThrowExceptionNoSuchFileExists, however in the source code I have renamed it to ThrowExceptionFileActionFailed. This latter name suits the exception much code and explicitly indicates it's purpose. I apologize for this confusion.
+
+The Connect Four game is a game that is played by two players. The game is played on the 6 by 7 grid. Players decide whether they play for 'X' or 'O'. Connect Four game is a game with "gravity". The token can only be placed in one of the 7 columns and it falls all the way to the bottom row or until it hits other player's token(piece). The game is played until 4 'X' or 'O' are found on the board (horizontally, vertically, or diagonally) in which case either 'X' or 'O' wins. If there are no possible moves left on the board the game is a tie.
 
 ## Description
 
 The Connect Four game is a two-player game in which 'X' or 'O' is inputed by the user until someone wins or there are no possible moves.
 
 When the game starts, welcome message in printed on the console and the user is prompted to enter one of the menu options:
-* (1.) Start a new game
-* (2.) Load a game from a file
-* (3.) Exit
+* 1) Start a new game
+* 2) Load a game from a file
+* 3) Exit
 
-Also, players are askeded whether they want to turn on autosave (the file name is prompted at every save) and whether they need the begining menu or they want to play the game until one of them wins or the game is a tie.  
+**Note: When the board gets loaded, if the both users have same amount of tokens places, then user 'O' will go first.
 
-Once the user select the option, the program will print the current state of the board on the console and prompt the user to input a column to put his token in. After the user makes a move, the current state of the board is printed and the user is prompted to save the current state of the board to the file. This process repeats until someone win or the game is a tie. The user always has a option to quit the game by returning to the menu and exiting.
+Also, players are asked whether they want to turn on autosave (the file name is prompted once).
+
+Once the user select the option, the program will print the current state of the board on the console and prompt the user to input a column to put his token in. After the user makes a move, the current state of the board is printed and the user is prompted to save the current state of the board to the file (if autosave option is specified, the board gets automatically saved). This process repeats until someone win or the game is a tie. If the file is saved, the user gets an option to quit the game by returning to the main menu and exiting.
 
 My Connect Four game consists of 12 classes, 5 of which are user-defined exception classes. The classes are structured in way that Board class controls the state of the board and the board itself is build on BoardCell pieces, which represent each cell. The ConnectFour class is used to control the flow of the game based on the information that other classes could provided. TextUI class is used for interactions with the user(printing and getting the input). FileHandling, Player and Runner are suplementary classes the help with the building the game itself. For further description of the classes refer to the comment above each class in the source code.
 
@@ -59,7 +64,7 @@ gradle clean test
 
 ## Limitations
 
-The user is only allowed to save the file to the 'assets' folder. 
+The user is only allowed to save the file to the 'assets' folder.
 
 ## Author Information
 
@@ -71,8 +76,14 @@ Phone: +1 (343) 264-3588
 
 Major development steps:
 
+* 0.8
+    * Created an additional test, cleaned build.gradle file as well as fixed checkstyle errors in BoardTest class
+    * See [b7c72fc0bbd59d7344f4c8234b14b8766cfe8927](Fixed last test + fixed checkstyle errors + removed 'test' task from build.gradle)
+* 0.7
+    * Created Junit tests from every method in Board class. Made adjustements to clean code in the classes
+    * See [f36009f9dfd0888a71438ced6e7d539fdf2fc952](Minor adjustments to source code + created a Test Suite(JUnit Tests))
 * 0.6
-    * Added javadoc comments for public methods as well as comments explaining purpose of eahc class
+    * Added javadoc comments for public methods as well as comments explaining purpose of each class
     * See [1bd12c7f541d713dab6d35f3c77a647bb46461ef](Added all the Javadoc comments + created extra exception class)
 * 0.5
     * Implemented file handling

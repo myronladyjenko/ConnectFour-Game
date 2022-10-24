@@ -120,15 +120,19 @@ public class Board {
             throw new ThrowExceptionWrongBoardFormat("The file contains unexpected symbols. Please restart\n");
         }
 
-        if (checkIncorrectNumberOfMoves(sBoard)) {
-            throw new ThrowExceptionWrongBoardFormat("One player did too many moves. Please restart\n");
+        StringBuilder playerWithWrongNumOfMoves = new StringBuilder("");
+        if (checkIncorrectNumberOfMoves(sBoard, playerWithWrongNumOfMoves)) {
+            throw new ThrowExceptionWrongBoardFormat("Player: " + playerWithWrongNumOfMoves.toString()
+                                                     + " did 2 or more moves then the other player. Please restart\n");
         }
 
         // check if the game has been already won
         StringBuilder message = new StringBuilder("");
+        cellBoard = new ArrayList<BoardCell>();
         createBoardFromString(strBoard);
         if (checkBoardWinner(message)) {
-            throw new ThrowExceptionTheGameHasEnded("The game on this board has finihsed. " + message);
+            throw new ThrowExceptionTheGameHasEnded("The game on this board has finished. "
+                                                    + message + ". Please restart\n");
         }
 
         if (checkIfBoardContainsFloatingCell(sBoard)) {
@@ -148,7 +152,7 @@ public class Board {
         return false;
     }
 
-    private boolean checkIncorrectNumberOfMoves(String sBoard) {
+    private boolean checkIncorrectNumberOfMoves(String sBoard, StringBuilder playerWhoExceedsNumTurns) {
         int countOnes = 0;
         int countTwos = 0;
 
@@ -162,6 +166,11 @@ public class Board {
         }
 
         if (Math.abs(countOnes - countTwos) >= 2) {
+            if (countOnes >= countTwos) {
+                playerWhoExceedsNumTurns.append("X");
+            } else {
+                playerWhoExceedsNumTurns.append("O");
+            }
             return true;
         }
         return false;
@@ -169,14 +178,16 @@ public class Board {
 
     private boolean checkIfBoardContainsFloatingCell(String sBoard) {
         String column = "";
-        for (int i = numOfColumns; i > 0; i--) {
+        for (int i = 0; i < numOfColumns; i++) {
             for (int j = numOfRows; j > 0; j--) {
-                int startPos = i * j - 1;
+                int startPos = (numOfColumns * j) - 1 - i;
                 column += sBoard.charAt(startPos);
             }
+
             if (!checkColumn(column)) {
                 return true;
             }
+            column = "";
         }
         return false;
     }
@@ -198,7 +209,6 @@ public class Board {
      * @param currTurn The current player's turn.
      */
     public void updateBoard(char currTurn) {
-        System.out.println(getAvailablePosNumber());
         cellBoard.set(getAvailablePosNumber(), new BoardCell((char)currTurn));
     }
 
@@ -283,7 +293,6 @@ public class Board {
                 break;
             }
         } while(false);
-
         return getWinnerValue();
     }
 

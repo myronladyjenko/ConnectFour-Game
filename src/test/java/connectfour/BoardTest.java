@@ -490,7 +490,8 @@ public class BoardTest{
             Assert.fail();
         } catch (ThrowExceptionWrongBoardFormat ex) {
             Assert.assertTrue(ex instanceof ThrowExceptionWrongBoardFormat);
-            Assert.assertEquals("One player did too many moves. Please restart\n", ex.getMessage());
+            Assert.assertEquals("Player: X did 2 or more moves then the other player. Please restart\n", 
+                                ex.getMessage());
         } catch (ThrowExceptionTheGameHasEnded ex) {
             Assert.fail();
         }
@@ -519,7 +520,8 @@ public class BoardTest{
             Assert.fail();
         } catch (ThrowExceptionTheGameHasEnded ex) {
             Assert.assertTrue(ex instanceof ThrowExceptionTheGameHasEnded);
-            Assert.assertEquals("The game on this board has finihsed. " + message, ex.getMessage());
+            Assert.assertEquals("The game on this board has finished. "
+                                + message + ". Please restart\n", ex.getMessage());
         }
     }
 

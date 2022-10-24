@@ -50,7 +50,7 @@ public class FileHandling {
             setStatusOfLoadOrSaveFromFile(true);
         } catch (Exception e) {
             throw new ThrowExceptionFileActionHasFailed("Provided file name is incorrect or doesn't exist or"
-                                                        + " failed to open: fileName");
+                                                        + " failed to open: " + fileName);
         }
     }
 

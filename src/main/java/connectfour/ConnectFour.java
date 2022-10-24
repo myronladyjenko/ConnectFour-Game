@@ -17,6 +17,7 @@ public class ConnectFour {
     private boolean autoSave;
     private boolean skipMenuOption;
     private boolean improperLoading;
+    private boolean fileProperlySaved;
 
     private final int checkCharacter = 0;
     private final int checkInteger = 1;
@@ -32,6 +33,7 @@ public class ConnectFour {
         setAutoSave(false);
         setSkipMenuOption(false);
         setImproperLoading(false);
+        setFileProperlySaved(false);
     }
 
     /**
@@ -40,7 +42,7 @@ public class ConnectFour {
      * The instance of Board class (board) is used to indirectly act on board.
      */
     public void playGame() {
-        connectFourUI.printString("\n\tWELCOME TO THE ConnectFour GAME!\n\n");
+        connectFourUI.printString("\n\tWELCOME TO THE ConnectFour GAME!\n");
 
         while (getSkipMenuOption() || chooseTheMenuOptionAndInitialize() != 3) {
             StringBuilder messageAboutWinner = new StringBuilder("");
@@ -61,16 +63,21 @@ public class ConnectFour {
                     connectFourUI.printString("The Board is not Saved\n\n");
                 }
                 setSkipMenuOption(false);
+                continue;
             } else {
-                connectFourUI.printString("Current board state: \n");
+                connectFourUI.printString("\nCurrent board state: \n");
                 connectFourUI.printString(board.toString() + "\n\n");
             }
 
             saveFileManuallyUserPrompts();
-            if (promptUser("Would you like to continue?\n", "Please enter 'y' or 'n': ") == 'y') {
-                setSkipMenuOption(true);
+            if (getFileProperlySaved()) {
+                if (promptUser("Would you like to continue?\n", "Please enter 'y' or 'n': ") == 'y') {
+                    setSkipMenuOption(true);
+                } else {
+                    setSkipMenuOption(false);
+                }
             } else {
-                setSkipMenuOption(false);
+                setSkipMenuOption(true);
             }
         }
         connectFourUI.closeScanner();
@@ -151,7 +158,8 @@ public class ConnectFour {
         }
 
         if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
-            connectFourUI.printString("Board for successfully saved\n");
+            setFileProperlySaved(true);
+            connectFourUI.printString("Board was successfully saved\n");
         }
     }
 
@@ -160,7 +168,8 @@ public class ConnectFour {
             if (promptUser("Would you like to save the board?\n", "Please enter 'y' or 'n': ") == 'y') {
                 handleStepsToSaveToFile();
             } else {
-                connectFourUI.printString("The Board is not Saved\n\n");
+                setFileProperlySaved(false);
+                connectFourUI.printString("The Board is not saved\n\n");
             }
         } else {
             handleStepsToSaveToFile();
@@ -195,7 +204,7 @@ public class ConnectFour {
             try {
                 userIntegerInput = Integer.parseInt(userInput);
             } catch (NumberFormatException ex) {
-                throw new ThrowExceptionForInvalidInput("The input wasn't converted to an checkInteger.");
+                throw new ThrowExceptionForInvalidInput("The input wasn't converted to an integer.");
             }
             checkMoveOnBoard(userIntegerInput);
         } else if (typeToCheckFor == getConstFileNameLoad()) {
@@ -210,20 +219,22 @@ public class ConnectFour {
         try {
             userIntegerInput = Integer.parseInt(userChoice);
         } catch (NumberFormatException ex) {
-            throw new ThrowExceptionForInvalidInput("The input wasn't converted to an checkInteger.");
+            throw new ThrowExceptionForInvalidInput("The input wasn't able to be converted to an integer.");
         }
         
         if (userIntegerInput < 1 || userIntegerInput > 3) {
-            throw new ThrowExceptionForInvalidInput("The input is out of range for 1-3: " + userChoice);
+            throw new ThrowExceptionForInvalidInput("The input: " + userChoice + " is out of range for options 1-3.");
         }
     }
 
     private void validateCharInput(String userChoice) throws ThrowExceptionForInvalidInput {
         if (userChoice.length() != 1) {
-            throw new ThrowExceptionForInvalidInput("The input value is not the right length: " + userChoice);
+            throw new ThrowExceptionForInvalidInput("The input value is: " + userChoice
+                                                    + ", which not the right length: " + userChoice.length());
         } else {
             if (userChoice.charAt(0) != 'y' && userChoice.charAt(0) != 'n') {
-                throw new ThrowExceptionForInvalidInput("The input is not 'y' or 'n': " + userChoice);
+                throw new ThrowExceptionForInvalidInput("The input:" + userChoice
+                                                        + " is not 'y' or 'n'. Please enter correct format");
             }
         }
     }
@@ -244,7 +255,7 @@ public class ConnectFour {
     }
 
     private void displayStartGameMenu() {
-        connectFourUI.printString("Choose one of the options below to proceed:\n");
+        connectFourUI.printString("\nChoose one of the options below to proceed:\n");
         connectFourUI.printString("1) Start a new game\n");
         connectFourUI.printString("2) Load a game from a file\n");
         connectFourUI.printString("3) Exit\n");
@@ -326,6 +337,14 @@ public class ConnectFour {
 
     private boolean getImproperLoading() {
         return improperLoading;
+    }
+
+    private void setFileProperlySaved(boolean boolValue) {
+        fileProperlySaved = boolValue;
+    }
+
+    private boolean getFileProperlySaved() {
+        return fileProperlySaved;
     }
 
     /**
