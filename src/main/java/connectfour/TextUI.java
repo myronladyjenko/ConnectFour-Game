@@ -45,7 +45,7 @@ public class TextUI {
                 printString(incorrectInputEx.getMessage() + "\n");
             } catch (ThrowExceptionWrongMoveOnBoard incorrectMoveEx) {
                 printString(incorrectMoveEx.getMessage() + "\n");
-            } catch (ThrowExceptionNoSuchFileExists incorrectFileName) {
+            } catch (ThrowExceptionFileActionHasFailed incorrectFileName) {
                 printString(incorrectFileName.getMessage() + "\n");
             }
             printString("\n");
@@ -53,7 +53,7 @@ public class TextUI {
     }
 
     private void handleExceptions(int inputTypeToCheckFor, String inputString) 
-                throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionNoSuchFileExists {
+            throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionFileActionHasFailed {
         if (inputTypeToCheckFor == connectFour.getConstCharacter()) {
             connectFour.validateMove(inputTypeToCheckFor, inputString);
             setCharacterInput(inputString);

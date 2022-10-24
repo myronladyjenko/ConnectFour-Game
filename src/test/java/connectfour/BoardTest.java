@@ -13,12 +13,12 @@ The test results are reported in the reports subfolder of the build directory */
 
 
 public class BoardTest{
-    private Board tester;
+    private Board testerBoard;
 
     @Before
     public void setup() {
         //set up for the test
-        tester = new Board();
+        testerBoard = new Board();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class BoardTest{
         +"|_____|_____|_____|_____|_____|_____|_____|";
 
         // Act
-        String stringBoard = tester.toString();
+        String stringBoard = testerBoard.toString();
 
         // Assert
         Assert.assertEquals(emptyBoard, stringBoard);
@@ -54,7 +54,7 @@ public class BoardTest{
     @Test
     public void testBoardWinnerValue() {
         // Arrange, Act
-        boolean winnerValueByConstructor = tester.getWinnerValue();
+        boolean winnerValueByConstructor = testerBoard.getWinnerValue();
 
         // Assert
         Assert.assertEquals(false, winnerValueByConstructor);
@@ -63,7 +63,7 @@ public class BoardTest{
     @Test
     public void testBoardWinPosition() {
         // Arrange, Act
-        int winPositionByConstructor = tester.getWinPosition();
+        int winPositionByConstructor = testerBoard.getWinPosition();
 
         // Assert
         Assert.assertEquals(-1, winPositionByConstructor);
@@ -72,7 +72,7 @@ public class BoardTest{
     @Test
     public void testBoardAvailableValue() {
         // Arrange, Act
-        int availablePosNumberByConstructor = tester.getAvailablePosNumber();
+        int availablePosNumberByConstructor = testerBoard.getAvailablePosNumber();
 
         // Assert
         Assert.assertEquals(-1, availablePosNumberByConstructor);
@@ -81,7 +81,7 @@ public class BoardTest{
     @Test
     public void testBoardPlayerToGoNext() {
         // Arrange, Act
-        char nextPlayerToGo = tester.getPlayerTurnToGoNext();
+        char nextPlayerToGo = testerBoard.getPlayerTurnToGoNext();
 
         // Assert
         Assert.assertEquals('-', nextPlayerToGo);
@@ -96,6 +96,7 @@ public class BoardTest{
                             +"0,0,0,0,0,0,0\n"
                             +"0,0,0,0,0,0,0\n"
                             +"0,0,0,0,0,0,0";
+
         Board emptyBoard = new Board();
 
         // Act
@@ -114,7 +115,6 @@ public class BoardTest{
                             +"0,0,1,1,2,0,0\n"
                             +"2,1,1,2,1,2,0\n"
                             +"2,2,2,1,1,2,0";
-
         Board boardOverLoaded = new Board(stringBoard);
 
         // Act
@@ -223,7 +223,7 @@ public class BoardTest{
                            +" ----- ----- ----- ----- ----- ----- ----- \n";
 
         // Act
-        String obtainedRow = tester.constructRowOfAllowedMoves();
+        String obtainedRow = testerBoard.constructRowOfAllowedMoves();
 
         // Assert
         Assert.assertEquals(rowOfMoves, obtainedRow);
@@ -360,13 +360,14 @@ public class BoardTest{
 
         // Act
         try {
-            tester.validateMoveOnBoard(inputColumn);
-            tester.updateBoard(expectCharInput);
+            testerBoard.validateMoveOnBoard(inputColumn);
+            testerBoard.updateBoard(expectCharInput);
     
-            String strToWork = tester.getFIleFormatStringRepresantionOfBoard();
+            String strToWork = testerBoard.getFIleFormatStringRepresantionOfBoard();
             strToWork = strToWork.replaceAll("\n, ", "");
-            Assert.assertEquals(expectOutput, Character.toString(tester.getFIleFormatStringRepresantionOfBoard().charAt(offset 
-                                                                 + tester.getAvailablePosNumber())));
+            Assert.assertEquals(expectOutput, 
+                                Character.toString(testerBoard.getFIleFormatStringRepresantionOfBoard().charAt(
+                                                   offset + testerBoard.getAvailablePosNumber())));
         } catch (ThrowExceptionWrongMoveOnBoard e) {
             throw new AssertionError(e.getMessage());
         }
@@ -378,7 +379,7 @@ public class BoardTest{
         int column = 0;
 
         // Assert
-        tester.validateMoveOnBoard(column);
+        testerBoard.validateMoveOnBoard(column);
     }
 
     @Test
@@ -393,7 +394,10 @@ public class BoardTest{
         int column = 3;
 
         // Assert
-        ThrowExceptionWrongMoveOnBoard exception = Assert.assertThrows(ThrowExceptionWrongMoveOnBoard.class, () -> {boardOverLoaded.validateMoveOnBoard(column);} );
+        ThrowExceptionWrongMoveOnBoard exception = Assert.assertThrows(ThrowExceptionWrongMoveOnBoard.class,
+                                                                       () -> {
+                                                                            boardOverLoaded.validateMoveOnBoard(column);
+                                                                       });
         Assert.assertEquals("The column is full", exception.getMessage());
     }
 
@@ -414,13 +418,13 @@ public class BoardTest{
             Assert.fail();
         } catch (ThrowExceptionWrongBoardFormat ex) {
             Assert.assertTrue(ex instanceof ThrowExceptionWrongBoardFormat);
-            Assert.assertEquals("Length of the board read from file doesn't match the expected one. Please restart\n", ex.getMessage());
+            Assert.assertEquals("Length of the board read from file doesn't match the expected one."
+                                + " Please restart\n", ex.getMessage());
         } catch (ThrowExceptionTheGameHasEnded ex) {
             Assert.fail();
         }
     }
 
-    /*
     @Test
     public void testTooShortBoard() {
         // Arrange
@@ -430,19 +434,19 @@ public class BoardTest{
                             +"1,1,2,1,2,2,0\n"
                             +"2,1,1,2,2,2,0\n"
                             +"2,2,2,1,1,1";
-        Board boardOverLoaded = new Board(stringBoard);
 
-        // Assert
+        // Act and Assert
         try {
-            boardOverLoaded.validateBoardFromFile(stringBoard);
+            testerBoard.validateBoardFromFile(stringBoard);
             Assert.fail();
         } catch (ThrowExceptionWrongBoardFormat ex) {
             Assert.assertTrue(ex instanceof ThrowExceptionWrongBoardFormat);
-            Assert.assertEquals("Length of the board read from file doesn't match the expected one. Please restart\n", ex.getMessage());
+            Assert.assertEquals("Length of the board read from file doesn't match the expected one."
+                                + " Please restart\n", ex.getMessage());
         } catch (ThrowExceptionTheGameHasEnded ex) {
             Assert.fail();
         }
-    } */
+    }
 
     @Test
     public void testUnexpectedSymbols() {
@@ -453,6 +457,7 @@ public class BoardTest{
                             +"1,1,2,1,2,2,0\n"
                             +"2,1,1,2,2,2,0\n"
                             +"2,2,2,1,1,1,0";
+
         Board boardOverLoaded = new Board(stringBoard);
 
         // Assert
@@ -476,6 +481,7 @@ public class BoardTest{
                             +"1,1,0,0,0,0,0\n"
                             +"2,1,1,0,0,0,1\n"
                             +"2,2,0,1,2,1,1";
+
         Board boardOverLoaded = new Board(stringBoard);
 
         // Assert
@@ -534,7 +540,8 @@ public class BoardTest{
             Assert.fail();
         } catch (ThrowExceptionWrongBoardFormat ex) {    
             Assert.assertTrue(ex instanceof ThrowExceptionWrongBoardFormat);
-            Assert.assertEquals("Board contains floating cells, which is not allowed in ConnectFour. Please restart\n", ex.getMessage());
+            Assert.assertEquals("Board contains floating cells, which is not allowed in ConnectFour." 
+                                + " Please restart\n", ex.getMessage());
         } catch (ThrowExceptionTheGameHasEnded ex) {
             Assert.fail();
         }

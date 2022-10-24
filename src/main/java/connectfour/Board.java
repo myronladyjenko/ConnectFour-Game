@@ -104,6 +104,8 @@ public class Board {
      * second one if the game has already finished. 
      * 
      * @param strBoard The board read from the file
+     * @throws ThrowExceptionWrongBoardFormat this exception is thrown when Board doesn't follow the proper format
+     * @throws ThrowExceptionTheGameHasEnded this exception is thrown when the current state of the game has a winner
      */
     public void validateBoardFromFile(String strBoard) 
                                       throws ThrowExceptionWrongBoardFormat, ThrowExceptionTheGameHasEnded {
@@ -205,6 +207,7 @@ public class Board {
      * range or the column is full
      * 
      * @param userInputColumn the column number that the user inputted
+     * @throws ThrowExceptionWrongMoveOnBoard this exception is thrown the move suggested by the user is invalid
      */
     public void validateMoveOnBoard(int userInputColumn) throws ThrowExceptionWrongMoveOnBoard {
         do {

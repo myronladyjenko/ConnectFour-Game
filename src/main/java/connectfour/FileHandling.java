@@ -34,8 +34,10 @@ public class FileHandling {
      * @param fileName The name of the file to be loaded.
      * @param strToStoreBoard is a StringBuilder object that will store the contents of the file.
      * It will sotre the string representation of the board (read from file).
+     *
+     * @throws ThrowExceptionFileActionHasFailed throws this exception when file doesn't exists or fialed to open
      */
-    public void loadFile(String fileName) throws ThrowExceptionNoSuchFileExists {
+    public void loadFile(String fileName) throws ThrowExceptionFileActionHasFailed {
         String oneLine = "";
         BufferedReader myReader;
         Path path = FileSystems.getDefault().getPath("assets/", fileName);
@@ -47,7 +49,8 @@ public class FileHandling {
             myReader.close();
             setStatusOfLoadOrSaveFromFile(true);
         } catch (Exception e) {
-            throw new ThrowExceptionNoSuchFileExists("Provided file name is incorrect or doesn't exist: " + fileName);
+            throw new ThrowExceptionFileActionHasFailed("Provided file name is incorrect or doesn't exist or"
+                                                        + " failed to open: fileName");
         }
     }
 
@@ -57,8 +60,9 @@ public class FileHandling {
      * 
      * @param fileName The name of the file to write to.
      * @param stringToWriteToFile The string (string representation of board) that you want to write to the file.
+     * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created) 
      */
-    public void saveToFile(String fileName, String stringToWriteToFile) throws ThrowExceptionNoSuchFileExists {
+    public void saveToFile(String fileName, String stringToWriteToFile) throws ThrowExceptionFileActionHasFailed {
         checkFileExistsOtherwiseCreate("assets/", fileName);
 
         Path path = FileSystems.getDefault().getPath("assets/", fileName);
@@ -66,12 +70,12 @@ public class FileHandling {
             Files.writeString(path, stringToWriteToFile);
             setStatusOfLoadOrSaveFromFile(true);
         } catch(IOException e) {
-            throw new ThrowExceptionNoSuchFileExists("Unable to write to the file: " + fileName);
+            throw new ThrowExceptionFileActionHasFailed("Unable to write to the file: " + fileName);
         }
     }
 
     private void checkFileExistsOtherwiseCreate(String fileLocationPrefix, String fileName) 
-                                                throws ThrowExceptionNoSuchFileExists {
+                                                throws ThrowExceptionFileActionHasFailed {
         // construct a file
         File file = new File(fileLocationPrefix + fileName);
 
@@ -79,7 +83,7 @@ public class FileHandling {
             try {
                 file.createNewFile(); 
             } catch (Exception ex) {
-                throw new ThrowExceptionNoSuchFileExists("Couldn't open the file " + fileName);
+                throw new ThrowExceptionFileActionHasFailed("Couldn't open the file " + fileName);
             }
         }
     }

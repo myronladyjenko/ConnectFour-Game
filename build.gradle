@@ -12,7 +12,6 @@ repositories {
 
 }
 
-
 dependencies {
     testImplementation('junit:junit:4.13')
 }
@@ -20,10 +19,4 @@ dependencies {
 task run;
 run.doFirst {
     println "To run the program:\njava -cp build/classes/java/main connectfour.Runner"
-}
-
-test {
-    useJUnit()
-
-    maxHeapSize = '1G'
 }

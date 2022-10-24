@@ -136,6 +136,25 @@ public class ConnectFour {
         }
     }
 
+    private void handleStepsToSaveToFile() {
+        boardFileHandle = new FileHandling();
+
+        if (!getAutoSaveValue()) {
+            connectFourUI.getUserInput("Please enter a name of the file to save to: ", getConstFileNameSave());
+        } else {
+            try {
+                boardFileHandle.saveToFile(connectFourUI.getFileNameInput(), 
+                                           board.getFIleFormatStringRepresantionOfBoard());
+            } catch (ThrowExceptionFileActionHasFailed wrongFileEx) {
+                connectFourUI.printString(wrongFileEx.getMessage());
+            }
+        }
+
+        if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
+            connectFourUI.printString("Board for successfully saved\n");
+        }
+    }
+
     private void saveFileManuallyUserPrompts() {
         if (!getAutoSaveValue()) {
             if (promptUser("Would you like to save the board?\n", "Please enter 'y' or 'n': ") == 'y') {
@@ -149,25 +168,6 @@ public class ConnectFour {
         connectFourUI.printString("\n");
     }
 
-    private void handleStepsToSaveToFile() {
-        boardFileHandle = new FileHandling();
-
-        if (!getAutoSaveValue()) {
-            connectFourUI.getUserInput("Please enter a name of the file to save to: ", getConstFileNameSave());
-        } else {
-            try {
-                boardFileHandle.saveToFile(connectFourUI.getFileNameInput(), 
-                                           board.getFIleFormatStringRepresantionOfBoard());
-            } catch (ThrowExceptionNoSuchFileExists wrongFileEx) {
-                connectFourUI.printString(wrongFileEx.getMessage());
-            }
-        }
-
-        if (boardFileHandle.getStatusOfLoadOrSaveFromFile()) {
-            connectFourUI.printString("Board for successfully saved\n");
-        }
-    }
-
     private char promptUser(String questionToAsk, String inputToAskFor) {
         connectFourUI.printString(questionToAsk);            
         connectFourUI.getUserInput(inputToAskFor, getConstCharacter());
@@ -179,9 +179,13 @@ public class ConnectFour {
      * 
      * @param typeToCheckFor This is used to detect which type of input we are checking for
      * @param userInput The user input that is to be validated.
+     * 
+     * @throws ThrowExceptionForInvalidInput occurs when the inputed values doesn't meet the required criteria
+     * @throws ThrowExceptionWrongMoveOnBoard occurs when the move on board is invalid due (i.e. column full)
+     * @throws ThrowExceptionFileActionHasFailed occurs when the operation to read/write from/to file was unsuccesfull 
      */
     public void validateMove(int typeToCheckFor, String userInput) 
-                throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionNoSuchFileExists{
+                throws ThrowExceptionForInvalidInput, ThrowExceptionWrongMoveOnBoard, ThrowExceptionFileActionHasFailed{
         if (typeToCheckFor == getConstCharacter()) {
             validateCharInput(userInput);
         } else if (typeToCheckFor == getConstInteger()) {
@@ -228,12 +232,12 @@ public class ConnectFour {
         board.validateMoveOnBoard(userChoice);
     }
 
-    private boolean tryLoadingFromFile(String userString) throws ThrowExceptionNoSuchFileExists {
+    private boolean tryLoadingFromFile(String userString) throws ThrowExceptionFileActionHasFailed {
         boardFileHandle.loadFile(userString);
         return true;
     }
 
-    private boolean trySavingToFile(String userString) throws ThrowExceptionNoSuchFileExists {
+    private boolean trySavingToFile(String userString) throws ThrowExceptionFileActionHasFailed {
         boardFileHandle = new FileHandling();
         boardFileHandle.saveToFile(userString, board.getFIleFormatStringRepresantionOfBoard());
         return true;

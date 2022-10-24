@@ -59,7 +59,7 @@ gradle clean test
 
 ## Limitations
 
-The user is only allowed to save the file to the assets folder. 
+The user is only allowed to save the file to the 'assets' folder. 
 
 ## Author Information
 

@@ -8,6 +8,12 @@ package connectfour;
  * @author Myron Ladyjenko
  */
 public class ThrowExceptionWrongBoardFormat extends Exception {
+    /**
+     * This constructor calls constructor of the exception class with the message passed as a parameter
+     * whenever this type of exception thrown from any of the classes
+     * 
+     * @param exceptionMessage the message to be displayed to the user
+     */
     public ThrowExceptionWrongBoardFormat(String exceptionMessage) {
             super(exceptionMessage);
     }
