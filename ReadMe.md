@@ -1,7 +1,8 @@
 # Connect Four Game
 
 !!! IMPORTANT !!! 
-In the code I reference user-defined exception class ThrowExceptionNoSuchFileExists, however in the source code I have renamed it to ThrowExceptionFileActionFailed. This latter name suits the exception much code and explicitly indicates it's purpose. I apologize for this confusion.
+
+In the code review I refer to the user-defined exception class ThrowExceptionNoSuchFileExists, however in the source code I have renamed it to ThrowExceptionFileActionFailed. This latter name suits the exception class much better since it explicitly indicates it's purpose. I apologize for this confusion.
 
 The Connect Four game is a game that is played by two players. The game is played on the 6 by 7 grid. Players decide whether they play for 'X' or 'O'. Connect Four game is a game with "gravity". The token can only be placed in one of the 7 columns and it falls all the way to the bottom row or until it hits other player's token(piece). The game is played until 4 'X' or 'O' are found on the board (horizontally, vertically, or diagonally) in which case either 'X' or 'O' wins. If there are no possible moves left on the board the game is a tie.
 
