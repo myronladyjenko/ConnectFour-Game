@@ -1,9 +1,5 @@
 # Connect Four Game
 
-!!! IMPORTANT !!! 
-
-In the code review I refer to the user-defined exception class ThrowExceptionNoSuchFileExists, however in the source code I have renamed it to ThrowExceptionFileActionFailed. This latter name suits the exception class much better since it explicitly indicates it's purpose. I apologize for this confusion.
-
 The Connect Four game is a game that is played by two players. The game is played on the 6 by 7 grid. Players decide whether they play for 'X' or 'O'. Connect Four game is a game with "gravity". The token can only be placed in one of the 7 columns and it falls all the way to the bottom row or until it hits other player's token(piece). The game is played until 4 'X' or 'O' are found on the board (horizontally, vertically, or diagonally) in which case either 'X' or 'O' wins. If there are no possible moves left on the board the game is a tie.
 
 ## Description
@@ -27,7 +23,7 @@ My Connect Four game consists of 12 classes, 5 of which are user-defined excepti
 
 ### Dependencies
 
-To run the program the JDK 8 version or above should be installed. 
+To run the program the JDK 17 version or above should be installed. 
 The other option to run the program is through gradle (this can be done inside the scioer container through the shell, through the extension or the local installation of gradle).
 
 ### Executing program
@@ -61,6 +57,16 @@ java -cp build/classes/java/main connectfour.Runner
 Note that in order to just separately build test, the following command could be ran:
 ```
 gradle clean test
+```
+
+In order to build without gradle you can run command from the connectfour directory (package):
+```
+javaC Runner.java Board.java BoardCell.java ConnectFour.java FileHandling.java Player.java TextUI.java ThrowExceptionFileActionHasFailed.java ThrowExceptionForInvalidInput.java ThrowExceptionTheGameHasEnded.java ThrowExceptionWrongBoardFormat.java ThrowExceptionWrongMoveOnBoard.java
+```
+
+In otder to run the program, please run the command from the java directory:
+```
+java connectFour.Runner
 ```
 
 ## Limitations
