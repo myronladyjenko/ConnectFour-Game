@@ -24,7 +24,6 @@ My Connect Four game consists of 12 classes, 5 of which are user-defined excepti
 ### Dependencies
 
 To run the program the JDK 17 version or above should be installed. 
-The other option to run the program is through gradle (this can be done inside the scioer container through the shell, through the extension or the local installation of gradle).
 
 ### Executing program
 
@@ -33,7 +32,7 @@ In order to build the project you can run command from the connectfour directory
 javaC Runner.java Board.java BoardCell.java ConnectFour.java FileHandling.java Player.java TextUI.java ThrowExceptionFileActionHasFailed.java ThrowExceptionForInvalidInput.java ThrowExceptionTheGameHasEnded.java ThrowExceptionWrongBoardFormat.java ThrowExceptionWrongMoveOnBoard.java
 ```
 
-In otder to run the program, please run the command from the java directory:
+In order to run the program, please run the command from the java directory:
 ```
 java connectFour.Runner
 ```
