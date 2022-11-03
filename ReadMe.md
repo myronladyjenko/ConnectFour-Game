@@ -28,38 +28,7 @@ The other option to run the program is through gradle (this can be done inside t
 
 ### Executing program
 
-Once you are in the scioer shell and in the right folder (in our case A2), to run the program you could follow the steps below:
-
-* To build the program the following command should be run:
-```
-gradle clean build
-```
-* OUTPUT:\
-BUILD SUCCESSFUL in 3s\
-7 actionable tasks: 7 executed
-
-* The below command provides instructions on how to run the program
-```
-gradle run 
-```
-* OUTPUT:\
-  Task :run
-  To run the program:\
-  java -cp build/classes/java/main connectfour.Runner\
-  BUILD SUCCESSFUL in 620ms\
-  1 actionable task: 1 executed
-
-* To run the program the following command should be run:
-```
-java -cp build/classes/java/main connectfour.Runner
-```
-
-Note that in order to just separately build test, the following command could be ran:
-```
-gradle clean test
-```
-
-In order to build without gradle you can run command from the connectfour directory (package):
+In order to build the project you can run command from the connectfour directory (package):
 ```
 javaC Runner.java Board.java BoardCell.java ConnectFour.java FileHandling.java Player.java TextUI.java ThrowExceptionFileActionHasFailed.java ThrowExceptionForInvalidInput.java ThrowExceptionTheGameHasEnded.java ThrowExceptionWrongBoardFormat.java ThrowExceptionWrongMoveOnBoard.java
 ```
